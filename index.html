@@ -5,19 +5,106 @@
   <title>Customer Feedback Form</title>
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <style>
-    body { font-family: Arial, sans-serif; background: #f3f6fa; margin: 0; padding: 0; }
-    .container { max-width: 400px; background: #fff; margin: 40px auto; padding: 24px 32px 32px 32px; border-radius: 16px; box-shadow: 0 8px 32px rgba(80, 100, 120, 0.10);}
-    h2 { color: #1d3557; text-align: center; margin-bottom: 12px; }
-    label { display: block; margin: 18px 0 6px 0; color: #2c2c2c; font-size: 1em;}
-    input, textarea { width: 100%; padding: 9px; font-size: 1em; border-radius: 6px; border: 1px solid #c5d6f2;}
-    textarea { min-height: 64px; resize: vertical;}
-    button { width: 100%; padding: 12px; font-size: 1em; background: #457b9d; color: #fff; border: none; border-radius: 6px; margin-top: 22px; cursor: pointer;}
-    button:active { background: #26466d;}
-    .message { margin-top: 18px; padding: 9px; border-radius: 5px; background: #eaf2fb; color: #21669e;}
+    body {
+      background: linear-gradient(120deg, #f5f8fa 0%, #e4ecfa 100%);
+      font-family: 'Segoe UI', Arial, sans-serif;
+      margin: 0;
+      min-height: 100vh;
+    }
+    .form-card {
+      background: #fff;
+      max-width: 420px;
+      margin: 48px auto 0 auto;
+      padding: 38px 36px 32px 36px;
+      border-radius: 22px;
+      box-shadow: 0 6px 36px rgba(63, 87, 126, 0.12), 0 2px 8px rgba(91, 133, 204, 0.07);
+      animation: cardFadeIn 1s cubic-bezier(0.3,0.7,0.4,1.4);
+    }
+    @keyframes cardFadeIn {
+      from { opacity: 0; transform: translateY(24px) scale(0.98);}
+      to   { opacity: 1; transform: translateY(0) scale(1);}
+    }
+    h2 {
+      text-align: center;
+      color: #27446b;
+      letter-spacing: 1px;
+      margin-top: 0;
+      margin-bottom: 18px;
+      font-size: 2em;
+      font-weight: 600;
+    }
+    label {
+      display: block;
+      margin: 22px 0 7px 0;
+      color: #375175;
+      font-weight: 500;
+      font-size: 1em;
+      letter-spacing: 0.02em;
+    }
+    input, textarea {
+      width: 100%;
+      padding: 12px 10px;
+      border: 1.5px solid #d8e3f4;
+      border-radius: 8px;
+      background: #f7fafc;
+      font-size: 1em;
+      font-family: inherit;
+      margin-bottom: 2px;
+      transition: border-color 0.22s;
+    }
+    input:focus, textarea:focus {
+      outline: none;
+      border-color: #78a8e0;
+      background: #f2f8ff;
+    }
+    textarea {
+      min-height: 80px;
+      resize: vertical;
+    }
+    button {
+      width: 100%;
+      padding: 13px;
+      font-size: 1.13em;
+      background: linear-gradient(90deg, #457b9d 0%, #6497d3 100%);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      margin-top: 26px;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      box-shadow: 0 2px 10px rgba(70,110,180,0.08);
+      cursor: pointer;
+      transition: background 0.16s;
+    }
+    button:active, button:focus {
+      background: linear-gradient(90deg, #35659d 0%, #527bc9 100%);
+    }
+    .message {
+      margin-top: 19px;
+      padding: 11px 16px;
+      border-radius: 8px;
+      background: #e6f1fa;
+      color: #195e7a;
+      font-size: 1.03em;
+      text-align: center;
+      box-shadow: 0 1px 4px rgba(68,98,120,0.08);
+      animation: fadeInMsg 0.7s cubic-bezier(.44,.64,.4,1.36);
+    }
+    @keyframes fadeInMsg {
+      from { opacity: 0; transform: scale(0.97);}
+      to   { opacity: 1; transform: scale(1);}
+    }
+    @media (max-width: 540px) {
+      .form-card {
+        padding: 22px 8vw 22px 8vw;
+        max-width: 97vw;
+      }
+      h2 { font-size: 1.37em; }
+    }
   </style>
 </head>
 <body>
-  <div class="container">
+  <div class="form-card">
     <h2>Customer Feedback</h2>
     <form id="feedbackForm">
       <label for="name">Your Name</label>
@@ -29,6 +116,7 @@
       <label for="feedback">Your Feedback</label>
       <textarea id="feedback" name="feedback" required></textarea>
       
+      <!-- Hidden fields for contextual data -->
       <input type="hidden" id="customerid" name="customerid" />
       <input type="hidden" id="ticket" name="ticket" />
       <input type="hidden" id="ref" name="ref" />
@@ -45,7 +133,13 @@
     document.getElementById('ticket').value = urlParams.get('ticket') || '';
     document.getElementById('ref').value = urlParams.get('ref') || '';
 
-    // Change this to your Power Automate/Flow, Azure, or other endpoint:
+    // Pre-fill name/email from URL if available
+    const name = urlParams.get('name');
+    const email = urlParams.get('email');
+    if (name) document.getElementById('name').value = name;
+    if (email) document.getElementById('email').value = email;
+
+    // Change this to your endpoint (Power Automate, Azure, etc.)
     const endpoint = "https://YOUR-ENDPOINT-URL-HERE";
 
     document.getElementById('feedbackForm').addEventListener('submit', function(e) {

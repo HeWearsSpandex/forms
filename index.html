@@ -233,7 +233,10 @@
       Customer Feedback
     </div>
     <div class="form-inner">
-      <form id="feedbackForm">
+      <p style="color:#444; margin:0 0 18px 0; font-size:1.03em;">
+        All fields are required unless marked optional.
+      </p>
+      <form id="feedbackForm" novalidate>
         <div id="ratingSelectorWrap">
           <div class="emoji-header">How did we do?</div>
           <div id="ratingSelector" style="text-align:center; margin-bottom:12px;">
@@ -253,7 +256,7 @@
           <input id="name" name="name" type="text" required placeholder="Enter your name" />
 
           <label for="email">Your Email (optional)</label>
-          <input id="email" name="email" type="email" required placeholder="Enter your email" />
+          <input id="email" name="email" type="email" placeholder="Enter your email" />
         </div>
 
         <div id="feedbackSection" style="display:none;">
@@ -328,4 +331,100 @@
       }
       ratingDisplay.textContent = emoji;
       ratingMsg.textContent = msg;
-      ratingMsg.style.color =
+      ratingMsg.style.color = "#222";
+      feedbackLabel.textContent = label;
+    }
+
+    // If rating present in URL, pre-set & skip selector
+    const urlRating = urlParams.get('rating');
+    if (urlRating === 'up' || urlRating === 'ok' || urlRating === 'down') {
+      showForRating(urlRating);
+    } else {
+      // Show emoji selector, hide message/display/feedback until chosen
+      ratingSelectorWrap.style.display = "";
+      ratingDisplay.style.display = "none";
+      ratingMsg.style.display = "none";
+      feedbackSection.style.display = "none";
+      afterRatingWrap.style.display = "none";
+      feedbackTextarea.required = false;
+      submitBtn.disabled = true; // Disabled until rating picked
+      // Click handler for emoji buttons
+      emojiBtns.forEach(btn => {
+        btn.onclick = function() {
+          emojiBtns.forEach(b => b.classList.remove('active'));
+          this.classList.add('active');
+          showForRating(this.getAttribute('data-rating'));
+        }
+      });
+    }
+
+    // Reset button functionality
+    resetBtn.onclick = function() {
+      // Show the emoji selector again, hide the chosen rating/message/feedback/reset
+      ratingSelectorWrap.style.display = "";
+      ratingDisplay.style.display = "none";
+      ratingMsg.style.display = "none";
+      feedbackSection.style.display = "none";
+      afterRatingWrap.style.display = "none";
+      ratingInput.value = "";
+      feedbackTextarea.value = "";
+      feedbackTextarea.required = false;
+      submitBtn.disabled = true; // Disable again
+      emojiBtns.forEach(btn => btn.classList.remove('active'));
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    };
+
+    // Change this to your endpoint (Power Automate, Azure, etc.)
+    const endpoint = "https://YOUR-ENDPOINT-URL-HERE";
+
+    document.getElementById('feedbackForm').addEventListener('submit', function(e) {
+      // Block submit if no rating chosen
+      if (!ratingInput.value) {
+        ratingMsg.textContent = "Please select how you felt about our service.";
+        ratingMsg.style.color = "#c00";
+        ratingMsg.style.display = "";
+        ratingSelectorWrap.scrollIntoView({behavior:"smooth", block:"center"});
+        e.preventDefault();
+        return false;
+      }
+      // Block submit if feedback is empty (belt & braces)
+      if (!feedbackTextarea.value.trim()) {
+        feedbackTextarea.focus();
+        e.preventDefault();
+        return false;
+      }
+      // Continue as normal
+      e.preventDefault();
+      const formData = {
+        name: this.name.value,
+        email: this.email.value,
+        feedback: this.feedback.value,
+        customerid: this.customerid.value,
+        ticket: this.ticket.value,
+        ref: this.ref.value,
+        rating: this.rating.value
+      };
+
+      fetch(endpoint, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData)
+      })
+      .then(res => {
+        if (res.ok) {
+          document.getElementById('responseMsg').innerText = "Thank you for your feedback!";
+          document.getElementById('responseMsg').style.display = 'block';
+          this.reset();
+          submitBtn.disabled = true;
+        } else {
+          throw new Error("Network error");
+        }
+      })
+      .catch(err => {
+        document.getElementById('responseMsg').innerText = "Sorry, there was a problem sending your feedback. Please try again.";
+        document.getElementById('responseMsg').style.display = 'block';
+      });
+    });
+  </script>
+</body>
+</html>

@@ -55,6 +55,16 @@
       margin: 0 auto;
       padding: 24px 0 0 0;
     }
+    .emoji-header {
+      text-align: center;
+      font-size: 2em;                /* Match the .form-title-bar */
+      font-weight: 600;
+      letter-spacing: 0.01em;
+      color: var(--jhb-blue);
+      font-family: inherit;
+      margin: 24px 0 20px 0;         /* More space above & below */
+      line-height: 1.13;
+    }
     label {
       display: block;
       margin: 22px 0 7px 0;
@@ -170,6 +180,7 @@
         padding: 4vw 0 0 0;
         max-width: 97vw;
       }
+      .emoji-header { font-size: 1.2em; }
       .emoji-btn { font-size: 1.4em; width: 45px; height: 45px; margin: 0 7px 10px 7px;}
     }
   </style>
@@ -184,19 +195,12 @@
     </div>
     <div class="form-inner">
       <form id="feedbackForm">
-        <!-- Thumbs/rating selector or display -->
         <div id="ratingSelectorWrap">
           <div class="emoji-header">How did we do?</div>
           <div id="ratingSelector" style="text-align:center; margin-bottom:12px;">
-            <button type="button" class="emoji-btn" data-rating="up" title="Happy">
-              👍
-            </button>
-            <button type="button" class="emoji-btn" data-rating="ok" title="Okay">
-              👌
-            </button>
-            <button type="button" class="emoji-btn" data-rating="down" title="Not happy">
-              👎
-            </button>
+            <button type="button" class="emoji-btn" data-rating="up" title="Happy">👍</button>
+            <button type="button" class="emoji-btn" data-rating="ok" title="Okay">👌</button>
+            <button type="button" class="emoji-btn" data-rating="down" title="Not happy">👎</button>
           </div>
         </div>
         <div id="ratingDisplay" style="text-align:center; font-size:2.6em; margin-bottom:8px; display:none;"></div>
@@ -241,6 +245,7 @@
     if (email) document.getElementById('email').value = email;
 
     // Elements
+    const ratingSelectorWrap = document.getElementById('ratingSelectorWrap');
     const ratingSelector = document.getElementById('ratingSelector');
     const ratingDisplay = document.getElementById('ratingDisplay');
     const ratingMsg = document.getElementById('ratingMsg');
@@ -252,7 +257,7 @@
 
     // Helper to show feedback path for a rating (feedback always shown/required)
     function showForRating(rating) {
-      ratingSelector.style.display = "none";
+      ratingSelectorWrap.style.display = "none";
       ratingDisplay.style.display = "";
       ratingMsg.style.display = "";
       feedbackSection.style.display = "";
@@ -286,7 +291,7 @@
       showForRating(urlRating);
     } else {
       // Show emoji selector, hide message/display/feedback until chosen
-      ratingSelector.style.display = "";
+      ratingSelectorWrap.style.display = "";
       ratingDisplay.style.display = "none";
       ratingMsg.style.display = "none";
       feedbackSection.style.display = "none";
@@ -310,11 +315,11 @@
         ratingMsg.textContent = "Please select how you felt about our service.";
         ratingMsg.style.color = "#c00";
         ratingMsg.style.display = "";
-        ratingSelector.scrollIntoView({behavior:"smooth", block:"center"});
+        ratingSelectorWrap.scrollIntoView({behavior:"smooth", block:"center"});
         e.preventDefault();
         return false;
       }
-      // Block submit if feedback is empty (belt & braces, should always be required)
+      // Block submit if feedback is empty (belt & braces)
       if (!feedbackTextarea.value.trim()) {
         feedbackTextarea.focus();
         e.preventDefault();

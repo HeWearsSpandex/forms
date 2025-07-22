@@ -11,10 +11,19 @@
       margin: 0;
       min-height: 100vh;
     }
+    .header-banner {
+      width: 100%;
+      max-width: 1100px;
+      margin: 32px auto 0 auto;
+      display: block;
+      border-radius: 20px;
+      box-shadow: 0 2px 24px rgba(200,150,40,0.10);
+      background: #fff;
+    }
     .form-card {
       background: #fff;
       max-width: 420px;
-      margin: 48px auto 0 auto;
+      margin: 40px auto 0 auto;
       padding: 38px 36px 32px 36px;
       border-radius: 22px;
       box-shadow: 0 6px 36px rgba(63, 87, 126, 0.12), 0 2px 8px rgba(91, 133, 204, 0.07);
@@ -94,16 +103,28 @@
       from { opacity: 0; transform: scale(0.97);}
       to   { opacity: 1; transform: scale(1);}
     }
+    @media (max-width: 1100px) {
+      .header-banner {
+        width: 98vw;
+        max-width: 99vw;
+      }
+    }
     @media (max-width: 540px) {
       .form-card {
-        padding: 22px 8vw 22px 8vw;
+        padding: 22px 4vw 22px 4vw;
         max-width: 97vw;
+      }
+      .header-banner {
+        margin-top: 12px;
       }
       h2 { font-size: 1.37em; }
     }
   </style>
 </head>
 <body>
+  <!-- Banner/Header image -->
+  <img src="Website Header.png" alt="JHB UK Ltd Header" class="header-banner" />
+
   <div class="form-card">
     <h2>Customer Feedback</h2>
     <form id="feedbackForm">

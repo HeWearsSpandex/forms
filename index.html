@@ -97,7 +97,7 @@
       opacity: 0.8;
     }
     textarea {
-      min-height: 110px; /* Larger feedback box */
+      min-height: 110px;
       resize: vertical;
     }
     button[type="submit"] {
@@ -159,25 +159,34 @@
       box-shadow: 0 2px 14px rgba(200, 150, 40, 0.17);
     }
     .reset-btn {
-      margin-left: 28px;
-      background: #eee;
-      color: #333;
-      border-radius: 8px;
-      font-size: 1em;
-      width: auto;
-      height: 44px;
-      vertical-align: middle;
-      border: 2px solid #aaa;
-      padding: 0 18px;
+      display: inline-block;
+      margin-left: 16px;
+      background: var(--jhb-yellow-faded);
+      color: #222;
+      border-radius: 50%;
+      font-size: 1.4em;
+      width: 56px;
+      height: 56px;
+      border: 2px solid #000;
       font-weight: 600;
       cursor: pointer;
       transition: background 0.16s, color 0.13s, border-color 0.13s;
       box-shadow: 0 2px 6px rgba(80, 90, 80, 0.04);
+      vertical-align: middle;
+      text-align: center;
+      line-height: 1.2em;
+      outline: none;
     }
     .reset-btn:hover, .reset-btn:focus-visible {
-      background: #ddd;
+      background: #ffe060;
       color: #000;
-      border-color: #333;
+      border-color: var(--jhb-yellow);
+    }
+    .reset-btn span {
+      font-size: 1.1em;
+      vertical-align: middle;
+      letter-spacing: 0.01em;
+      font-weight: 500;
     }
     .rating-message {
       font-weight: 500;
@@ -203,7 +212,7 @@
       }
       .emoji-header { font-size: 1.2em; }
       .emoji-btn { font-size: 1.4em; width: 45px; height: 45px; margin: 0 7px 10px 7px;}
-      .reset-btn { font-size: .92em; height: 36px; padding: 0 11px; }
+      .reset-btn { font-size: 1em; height: 38px; width: 38px;}
     }
   </style>
 </head>
@@ -223,8 +232,10 @@
             <button type="button" class="emoji-btn" data-rating="up" title="Happy">👍</button>
             <button type="button" class="emoji-btn" data-rating="ok" title="Okay">👌</button>
             <button type="button" class="emoji-btn" data-rating="down" title="Not happy">👎</button>
-            <button type="button" id="resetRating" class="reset-btn" title="Reset emoji selection">Reset</button>
           </div>
+        </div>
+        <div id="afterRatingWrap" style="display:none; text-align:center; margin-bottom:10px;">
+          <button type="button" id="resetRating" class="reset-btn" title="Change your rating" aria-label="Reset Rating"><span>↺</span></button>
         </div>
         <div id="ratingDisplay" style="text-align:center; font-size:2.6em; margin-bottom:8px; display:none;"></div>
         <div id="ratingMsg" class="rating-message" style="text-align:center; font-size:1.08em; margin-bottom:18px; display:none;"></div>
@@ -277,6 +288,7 @@
     const ratingInput = document.getElementById('rating');
     const feedbackTextarea = document.getElementById('feedback');
     const emojiBtns = document.querySelectorAll('.emoji-btn');
+    const afterRatingWrap = document.getElementById('afterRatingWrap');
     const resetBtn = document.getElementById('resetRating');
 
     // Helper to show feedback path for a rating (feedback always shown/required)
@@ -285,6 +297,7 @@
       ratingDisplay.style.display = "";
       ratingMsg.style.display = "";
       feedbackSection.style.display = "";
+      afterRatingWrap.style.display = ""; // Show the reset button
       feedbackTextarea.required = true;
       ratingInput.value = rating;
 
@@ -319,6 +332,7 @@
       ratingDisplay.style.display = "none";
       ratingMsg.style.display = "none";
       feedbackSection.style.display = "none";
+      afterRatingWrap.style.display = "none";
       feedbackTextarea.required = false;
       // Click handler for emoji buttons
       emojiBtns.forEach(btn => {
@@ -332,11 +346,12 @@
 
     // Reset button functionality
     resetBtn.onclick = function() {
-      // Show the emoji selector again, hide the chosen rating/message/feedback
+      // Show the emoji selector again, hide the chosen rating/message/feedback/reset
       ratingSelectorWrap.style.display = "";
       ratingDisplay.style.display = "none";
       ratingMsg.style.display = "none";
       feedbackSection.style.display = "none";
+      afterRatingWrap.style.display = "none";
       ratingInput.value = "";
       feedbackTextarea.value = "";
       feedbackTextarea.required = false;

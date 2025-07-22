@@ -185,16 +185,19 @@
     <div class="form-inner">
       <form id="feedbackForm">
         <!-- Thumbs/rating selector or display -->
-        <div id="ratingSelector" style="text-align:center; margin-bottom:12px;">
-          <button type="button" class="emoji-btn" data-rating="up" title="Happy">
-            👍
-          </button>
-          <button type="button" class="emoji-btn" data-rating="ok" title="Okay">
-            👌
-          </button>
-          <button type="button" class="emoji-btn" data-rating="down" title="Not happy">
-            👎
-          </button>
+        <div id="ratingSelectorWrap">
+          <div class="emoji-header">How did we do?</div>
+          <div id="ratingSelector" style="text-align:center; margin-bottom:12px;">
+            <button type="button" class="emoji-btn" data-rating="up" title="Happy">
+              👍
+            </button>
+            <button type="button" class="emoji-btn" data-rating="ok" title="Okay">
+              👌
+            </button>
+            <button type="button" class="emoji-btn" data-rating="down" title="Not happy">
+              👎
+            </button>
+          </div>
         </div>
         <div id="ratingDisplay" style="text-align:center; font-size:2.6em; margin-bottom:8px; display:none;"></div>
         <div id="ratingMsg" class="rating-message" style="text-align:center; font-size:1.08em; margin-bottom:18px; display:none;"></div>

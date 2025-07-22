@@ -12,6 +12,7 @@
       --jhb-lightblue: #f5f8fa;
       --jhb-green: #38b000;
       --jhb-green-dark: #228c22;
+      --jhb-grey: #bbb;
     }
     body {
       background: linear-gradient(120deg, #f5f8fa 0%, #e4ecfa 100%);
@@ -113,9 +114,16 @@
       letter-spacing: 0.05em;
       box-shadow: 0 2px 10px rgba(70,110,180,0.08);
       cursor: pointer;
-      transition: background 0.16s, color 0.13s, border-color 0.13s;
+      transition: background 0.16s, color 0.13s, border-color 0.13s, opacity 0.14s;
     }
-    button[type="submit"]:hover, button[type="submit"]:focus-visible {
+    button[type="submit"]:disabled {
+      background: var(--jhb-grey);
+      color: #666;
+      border-color: #ccc;
+      opacity: 0.65;
+      cursor: not-allowed;
+    }
+    button[type="submit"]:hover:enabled, button[type="submit"]:focus-visible:enabled {
       background: linear-gradient(90deg, var(--jhb-green) 0%, var(--jhb-green-dark) 100%);
       color: #fff;
       border-color: var(--jhb-green-dark);
@@ -259,7 +267,7 @@
         <input type="hidden" id="ref" name="ref" />
         <input type="hidden" id="rating" name="rating" />
 
-        <button type="submit">Send Feedback</button>
+        <button type="submit" id="submitBtn" disabled>Send Feedback</button>
       </form>
       <div id="responseMsg" class="message" style="display:none"></div>
     </div>
@@ -290,6 +298,7 @@
     const emojiBtns = document.querySelectorAll('.emoji-btn');
     const afterRatingWrap = document.getElementById('afterRatingWrap');
     const resetBtn = document.getElementById('resetRating');
+    const submitBtn = document.getElementById('submitBtn');
 
     // Helper to show feedback path for a rating (feedback always shown/required)
     function showForRating(rating) {
@@ -300,6 +309,7 @@
       afterRatingWrap.style.display = ""; // Show the reset button
       feedbackTextarea.required = true;
       ratingInput.value = rating;
+      submitBtn.disabled = false; // Enable submit
 
       emojiBtns.forEach(btn => btn.classList.remove('active'));
       let emoji, msg, label;
@@ -318,97 +328,4 @@
       }
       ratingDisplay.textContent = emoji;
       ratingMsg.textContent = msg;
-      ratingMsg.style.color = "#222";
-      feedbackLabel.textContent = label;
-    }
-
-    // If rating present in URL, pre-set & skip selector
-    const urlRating = urlParams.get('rating');
-    if (urlRating === 'up' || urlRating === 'ok' || urlRating === 'down') {
-      showForRating(urlRating);
-    } else {
-      // Show emoji selector, hide message/display/feedback until chosen
-      ratingSelectorWrap.style.display = "";
-      ratingDisplay.style.display = "none";
-      ratingMsg.style.display = "none";
-      feedbackSection.style.display = "none";
-      afterRatingWrap.style.display = "none";
-      feedbackTextarea.required = false;
-      // Click handler for emoji buttons
-      emojiBtns.forEach(btn => {
-        btn.onclick = function() {
-          emojiBtns.forEach(b => b.classList.remove('active'));
-          this.classList.add('active');
-          showForRating(this.getAttribute('data-rating'));
-        }
-      });
-    }
-
-    // Reset button functionality
-    resetBtn.onclick = function() {
-      // Show the emoji selector again, hide the chosen rating/message/feedback/reset
-      ratingSelectorWrap.style.display = "";
-      ratingDisplay.style.display = "none";
-      ratingMsg.style.display = "none";
-      feedbackSection.style.display = "none";
-      afterRatingWrap.style.display = "none";
-      ratingInput.value = "";
-      feedbackTextarea.value = "";
-      feedbackTextarea.required = false;
-      emojiBtns.forEach(btn => btn.classList.remove('active'));
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    };
-
-    // Change this to your endpoint (Power Automate, Azure, etc.)
-    const endpoint = "https://YOUR-ENDPOINT-URL-HERE";
-
-    document.getElementById('feedbackForm').addEventListener('submit', function(e) {
-      // Block submit if no rating chosen
-      if (!ratingInput.value) {
-        ratingMsg.textContent = "Please select how you felt about our service.";
-        ratingMsg.style.color = "#c00";
-        ratingMsg.style.display = "";
-        ratingSelectorWrap.scrollIntoView({behavior:"smooth", block:"center"});
-        e.preventDefault();
-        return false;
-      }
-      // Block submit if feedback is empty (belt & braces)
-      if (!feedbackTextarea.value.trim()) {
-        feedbackTextarea.focus();
-        e.preventDefault();
-        return false;
-      }
-      // Continue as normal
-      e.preventDefault();
-      const formData = {
-        name: this.name.value,
-        email: this.email.value,
-        feedback: this.feedback.value,
-        customerid: this.customerid.value,
-        ticket: this.ticket.value,
-        ref: this.ref.value,
-        rating: this.rating.value
-      };
-
-      fetch(endpoint, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData)
-      })
-      .then(res => {
-        if (res.ok) {
-          document.getElementById('responseMsg').innerText = "Thank you for your feedback!";
-          document.getElementById('responseMsg').style.display = 'block';
-          this.reset();
-        } else {
-          throw new Error("Network error");
-        }
-      })
-      .catch(err => {
-        document.getElementById('responseMsg').innerText = "Sorry, there was a problem sending your feedback. Please try again.";
-        document.getElementById('responseMsg').style.display = 'block';
-      });
-    });
-  </script>
-</body>
-</html>
+      ratingMsg.style.color =

@@ -101,6 +101,12 @@
       min-height: 110px;
       resize: vertical;
     }
+    .optional {
+      color: #888;
+      font-style: italic;
+      font-size: 0.98em;
+      margin-left: 3px;
+    }
     button[type="submit"] {
       width: 100%;
       padding: 13px;
@@ -255,13 +261,15 @@
           <label for="name">Your Name</label>
           <input id="name" name="name" type="text" required placeholder="Enter your name" />
 
-          <label for="email">Your Email (optional)</label>
+          <label for="email">Your Email <span class="optional">(optional)</span></label>
           <input id="email" name="email" type="email" placeholder="Enter your email" />
         </div>
 
         <div id="feedbackSection" style="display:none;">
-          <label for="feedback" id="feedbackLabel"></label>
-          <textarea id="feedback" name="feedback" required placeholder="Type your feedback"></textarea>
+          <label for="feedback" id="feedbackLabel">
+            What did we do well, or what could we do even better? <span class="optional">(optional)</span>
+          </label>
+          <textarea id="feedback" name="feedback" placeholder="Type your feedback"></textarea>
         </div>
         
         <!-- Hidden fields for contextual data -->
@@ -303,14 +311,14 @@
     const resetBtn = document.getElementById('resetRating');
     const submitBtn = document.getElementById('submitBtn');
 
-    // Helper to show feedback path for a rating (feedback always shown/required)
+    // Helper to show feedback path for a rating (feedback always shown, but optional)
     function showForRating(rating) {
       ratingSelectorWrap.style.display = "none";
       ratingDisplay.style.display = "";
       ratingMsg.style.display = "";
       feedbackSection.style.display = "";
       afterRatingWrap.style.display = ""; // Show the reset button
-      feedbackTextarea.required = true;
+      feedbackTextarea.required = false; // Feedback is now optional
       ratingInput.value = rating;
       submitBtn.disabled = false; // Enable submit
 
@@ -332,7 +340,7 @@
       ratingDisplay.textContent = emoji;
       ratingMsg.textContent = msg;
       ratingMsg.style.color = "#222";
-      feedbackLabel.textContent = label;
+      feedbackLabel.innerHTML = label + ' <span class="optional">(optional)</span>';
     }
 
     // If rating present in URL, pre-set & skip selector
@@ -387,13 +395,7 @@
         e.preventDefault();
         return false;
       }
-      // Block submit if feedback is empty (belt & braces)
-      if (!feedbackTextarea.value.trim()) {
-        feedbackTextarea.focus();
-        e.preventDefault();
-        return false;
-      }
-      // Continue as normal
+      // No need to block submit if feedback is empty (it's optional)
       e.preventDefault();
       const formData = {
         name: this.name.value,

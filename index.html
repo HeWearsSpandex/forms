@@ -7,7 +7,7 @@
   <style>
     :root {
       --jhb-yellow: #fbc206;
-      --jhb-yellow-faded: rgba(251,194,6,0.19);  /* Washed out yellow */
+      --jhb-yellow-faded: rgba(251,194,6,0.19);
       --jhb-blue: #27446b;
       --jhb-lightblue: #f5f8fa;
       --jhb-green: #38b000;
@@ -66,9 +66,9 @@
     input, textarea {
       width: 100%;
       padding: 12px 10px;
-      border: 2px solid #000;                       /* Black outline */
-      background: var(--jhb-yellow-faded);           /* Washed out yellow */
-      color: #000;                                   /* Black text */
+      border: 2px solid #000;
+      background: var(--jhb-yellow-faded);
+      color: #000;
       border-radius: 8px;
       font-size: 1em;
       font-family: inherit;
@@ -79,7 +79,7 @@
     input:focus, textarea:focus {
       outline: 2.5px solid #000;
       border-color: #000;
-      background: rgba(251,194,6,0.30);             /* Slightly more yellow on focus */
+      background: rgba(251,194,6,0.30);
       color: #000;
     }
     ::placeholder {
@@ -94,7 +94,7 @@
       width: 100%;
       padding: 13px;
       font-size: 1.13em;
-      background: var(--jhb-yellow-faded);           /* Washed out yellow */
+      background: var(--jhb-yellow-faded);
       color: #000;
       border: 2px solid #000;
       border-radius: 8px;
@@ -209,7 +209,7 @@
 
         <div id="feedbackSection" style="display:none;">
           <label for="feedback" id="feedbackLabel"></label>
-          <textarea id="feedback" name="feedback" placeholder="Type your feedback"></textarea>
+          <textarea id="feedback" name="feedback" required placeholder="Type your feedback"></textarea>
         </div>
         
         <!-- Hidden fields for contextual data -->
@@ -247,37 +247,34 @@
     const feedbackTextarea = document.getElementById('feedback');
     const emojiBtns = document.querySelectorAll('.emoji-btn');
 
-    // Helper to show feedback path for a rating
+    // Helper to show feedback path for a rating (feedback always shown/required)
     function showForRating(rating) {
-      // Hide emoji selector, show single emoji, show message
       ratingSelector.style.display = "none";
       ratingDisplay.style.display = "";
       ratingMsg.style.display = "";
+      feedbackSection.style.display = "";
+      feedbackTextarea.required = true;
       ratingInput.value = rating;
 
       emojiBtns.forEach(btn => btn.classList.remove('active'));
-      let emoji, msg;
+      let emoji, msg, label;
       if (rating === 'up') {
         emoji = '👍';
         msg = "We are glad we met your standards and ours.";
-        feedbackSection.style.display = "none";
-        feedbackTextarea.required = false;
+        label = "What did we do well, or what could we do even better?";
       } else if (rating === 'ok') {
         emoji = '👌';
         msg = "So, it went ok, but what could we do better next time?";
-        feedbackSection.style.display = "";
-        feedbackLabel.textContent = "How could we do better?";
-        feedbackTextarea.required = true;
+        label = "How could we do better?";
       } else if (rating === 'down') {
         emoji = '👎';
         msg = "We are sorry we let you down, please tell us what we could improve next time?";
-        feedbackSection.style.display = "";
-        feedbackLabel.textContent = "What should we improve next time?";
-        feedbackTextarea.required = true;
+        label = "What should we improve next time?";
       }
       ratingDisplay.textContent = emoji;
       ratingMsg.textContent = msg;
       ratingMsg.style.color = "#222";
+      feedbackLabel.textContent = label;
     }
 
     // If rating present in URL, pre-set & skip selector
@@ -311,6 +308,12 @@
         ratingMsg.style.color = "#c00";
         ratingMsg.style.display = "";
         ratingSelector.scrollIntoView({behavior:"smooth", block:"center"});
+        e.preventDefault();
+        return false;
+      }
+      // Block submit if feedback is empty (belt & braces, should always be required)
+      if (!feedbackTextarea.value.trim()) {
+        feedbackTextarea.focus();
         e.preventDefault();
         return false;
       }

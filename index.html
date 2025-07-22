@@ -90,7 +90,7 @@
       min-height: 80px;
       resize: vertical;
     }
-    button {
+    button[type="submit"] {
       width: 100%;
       padding: 13px;
       font-size: 1.13em;
@@ -103,9 +103,9 @@
       letter-spacing: 0.05em;
       box-shadow: 0 2px 10px rgba(70,110,180,0.08);
       cursor: pointer;
-      transition: background 0.16s, color 0.13s;
+      transition: background 0.16s, color 0.13s, border-color 0.13s;
     }
-    button:hover, button:focus-visible {
+    button[type="submit"]:hover, button[type="submit"]:focus-visible {
       background: linear-gradient(90deg, var(--jhb-green) 0%, var(--jhb-green-dark) 100%);
       color: #fff;
       border-color: var(--jhb-green-dark);
@@ -125,6 +125,34 @@
       from { opacity: 0; transform: scale(0.97);}
       to   { opacity: 1; transform: scale(1);}
     }
+    /* Emoji rating buttons */
+    .emoji-btn {
+      font-size: 2.5em;
+      margin: 0 18px 10px 18px;
+      background: var(--jhb-yellow-faded);
+      border: 2px solid #000;
+      border-radius: 50%;
+      width: 70px;
+      height: 70px;
+      line-height: 1.15em;
+      cursor: pointer;
+      transition: box-shadow 0.15s, border-color 0.15s, background 0.14s;
+      outline: none;
+      color: #222;
+      box-shadow: 0 2px 6px rgba(80, 90, 80, 0.06);
+      vertical-align: middle;
+      user-select: none;
+    }
+    .emoji-btn:hover, .emoji-btn.active, .emoji-btn:focus-visible {
+      background: #ffe060;
+      border-color: var(--jhb-yellow);
+      box-shadow: 0 2px 14px rgba(200, 150, 40, 0.17);
+    }
+    .rating-message {
+      font-weight: 500;
+      color: #222;
+      margin-bottom: 0.7em;
+    }
     @media (max-width: 1100px) {
       .header-banner, .form-wrap {
         width: 98vw;
@@ -142,6 +170,7 @@
         padding: 4vw 0 0 0;
         max-width: 97vw;
       }
+      .emoji-btn { font-size: 1.4em; width: 45px; height: 45px; margin: 0 7px 10px 7px;}
     }
   </style>
 </head>
@@ -155,19 +184,39 @@
     </div>
     <div class="form-inner">
       <form id="feedbackForm">
-        <label for="name">Your Name</label>
-        <input id="name" name="name" type="text" required placeholder="Enter your name" />
+        <!-- Thumbs/rating selector or display -->
+        <div id="ratingSelector" style="text-align:center; margin-bottom:12px;">
+          <button type="button" class="emoji-btn" data-rating="up" title="Happy">
+            👍
+          </button>
+          <button type="button" class="emoji-btn" data-rating="ok" title="Okay">
+            👌
+          </button>
+          <button type="button" class="emoji-btn" data-rating="down" title="Not happy">
+            👎
+          </button>
+        </div>
+        <div id="ratingDisplay" style="text-align:center; font-size:2.6em; margin-bottom:8px; display:none;"></div>
+        <div id="ratingMsg" class="rating-message" style="text-align:center; font-size:1.08em; margin-bottom:18px; display:none;"></div>
 
-        <label for="email">Your Email</label>
-        <input id="email" name="email" type="email" required placeholder="Enter your email" />
+        <div id="additionalFields">
+          <label for="name">Your Name</label>
+          <input id="name" name="name" type="text" required placeholder="Enter your name" />
 
-        <label for="feedback">Your Feedback</label>
-        <textarea id="feedback" name="feedback" required placeholder="Type your feedback"></textarea>
+          <label for="email">Your Email</label>
+          <input id="email" name="email" type="email" required placeholder="Enter your email" />
+        </div>
+
+        <div id="feedbackSection" style="display:none;">
+          <label for="feedback" id="feedbackLabel"></label>
+          <textarea id="feedback" name="feedback" placeholder="Type your feedback"></textarea>
+        </div>
         
         <!-- Hidden fields for contextual data -->
         <input type="hidden" id="customerid" name="customerid" />
         <input type="hidden" id="ticket" name="ticket" />
         <input type="hidden" id="ref" name="ref" />
+        <input type="hidden" id="rating" name="rating" />
 
         <button type="submit">Send Feedback</button>
       </form>
@@ -188,10 +237,84 @@
     if (name) document.getElementById('name').value = name;
     if (email) document.getElementById('email').value = email;
 
+    // Elements
+    const ratingSelector = document.getElementById('ratingSelector');
+    const ratingDisplay = document.getElementById('ratingDisplay');
+    const ratingMsg = document.getElementById('ratingMsg');
+    const feedbackSection = document.getElementById('feedbackSection');
+    const feedbackLabel = document.getElementById('feedbackLabel');
+    const ratingInput = document.getElementById('rating');
+    const feedbackTextarea = document.getElementById('feedback');
+    const emojiBtns = document.querySelectorAll('.emoji-btn');
+
+    // Helper to show feedback path for a rating
+    function showForRating(rating) {
+      // Hide emoji selector, show single emoji, show message
+      ratingSelector.style.display = "none";
+      ratingDisplay.style.display = "";
+      ratingMsg.style.display = "";
+      ratingInput.value = rating;
+
+      emojiBtns.forEach(btn => btn.classList.remove('active'));
+      let emoji, msg;
+      if (rating === 'up') {
+        emoji = '👍';
+        msg = "We are glad we met your standards and ours.";
+        feedbackSection.style.display = "none";
+        feedbackTextarea.required = false;
+      } else if (rating === 'ok') {
+        emoji = '👌';
+        msg = "So, it went ok, but what could we do better next time?";
+        feedbackSection.style.display = "";
+        feedbackLabel.textContent = "How could we do better?";
+        feedbackTextarea.required = true;
+      } else if (rating === 'down') {
+        emoji = '👎';
+        msg = "We are sorry we let you down, please tell us what we could improve next time?";
+        feedbackSection.style.display = "";
+        feedbackLabel.textContent = "What should we improve next time?";
+        feedbackTextarea.required = true;
+      }
+      ratingDisplay.textContent = emoji;
+      ratingMsg.textContent = msg;
+      ratingMsg.style.color = "#222";
+    }
+
+    // If rating present in URL, pre-set & skip selector
+    const urlRating = urlParams.get('rating');
+    if (urlRating === 'up' || urlRating === 'ok' || urlRating === 'down') {
+      showForRating(urlRating);
+    } else {
+      // Show emoji selector, hide message/display/feedback until chosen
+      ratingSelector.style.display = "";
+      ratingDisplay.style.display = "none";
+      ratingMsg.style.display = "none";
+      feedbackSection.style.display = "none";
+      feedbackTextarea.required = false;
+      // Click handler for emoji buttons
+      emojiBtns.forEach(btn => {
+        btn.onclick = function() {
+          emojiBtns.forEach(b => b.classList.remove('active'));
+          this.classList.add('active');
+          showForRating(this.getAttribute('data-rating'));
+        }
+      });
+    }
+
     // Change this to your endpoint (Power Automate, Azure, etc.)
     const endpoint = "https://YOUR-ENDPOINT-URL-HERE";
 
     document.getElementById('feedbackForm').addEventListener('submit', function(e) {
+      // Block submit if no rating chosen
+      if (!ratingInput.value) {
+        ratingMsg.textContent = "Please select how you felt about our service.";
+        ratingMsg.style.color = "#c00";
+        ratingMsg.style.display = "";
+        ratingSelector.scrollIntoView({behavior:"smooth", block:"center"});
+        e.preventDefault();
+        return false;
+      }
+      // Continue as normal
       e.preventDefault();
       const formData = {
         name: this.name.value,
@@ -199,7 +322,8 @@
         feedback: this.feedback.value,
         customerid: this.customerid.value,
         ticket: this.ticket.value,
-        ref: this.ref.value
+        ref: this.ref.value,
+        rating: this.rating.value
       };
 
       fetch(endpoint, {

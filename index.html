@@ -46,7 +46,7 @@
       letter-spacing: 0.01em;
       margin: 0;
       font-family: inherit;
-      border-bottom: 1.5px solid #eee6c5;
+      border-bottom: 6px solid var(--jhb-yellow); /* Thicker line, same yellow */
       background: transparent;
     }
     .form-inner {
@@ -65,18 +65,21 @@
     input, textarea {
       width: 100%;
       padding: 12px 10px;
-      border: 1.5px solid #d8e3f4;
+      border: 2px solid #000;           /* Black outline */
+      background: var(--jhb-yellow);     /* Yellow fill */
+      color: #222;                      /* Good contrast text */
       border-radius: 8px;
-      background: #f7fafc;
       font-size: 1em;
       font-family: inherit;
       margin-bottom: 2px;
-      transition: border-color 0.22s;
+      box-sizing: border-box;
+      transition: border-color 0.22s, background 0.18s;
     }
     input:focus, textarea:focus {
-      outline: none;
-      border-color: #78a8e0;
-      background: #f2f8ff;
+      outline: 2.5px solid #000;
+      border-color: #000;
+      background: #ffe060; /* Slightly lighter yellow on focus */
+      color: #111;
     }
     textarea {
       min-height: 80px;

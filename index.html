@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Customer Feedback Form</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <style>
+    body { font-family: Arial, sans-serif; background: #f3f6fa; margin: 0; padding: 0; }
+    .container { max-width: 400px; background: #fff; margin: 40px auto; padding: 24px 32px 32px 32px; border-radius: 16px; box-shadow: 0 8px 32px rgba(80, 100, 120, 0.10);}
+    h2 { color: #1d3557; text-align: center; margin-bottom: 12px; }
+    label { display: block; margin: 18px 0 6px 0; color: #2c2c2c; font-size: 1em;}
+    input, textarea { width: 100%; padding: 9px; font-size: 1em; border-radius: 6px; border: 1px solid #c5d6f2;}
+    textarea { min-height: 64px; resize: vertical;}
+    button { width: 100%; padding: 12px; font-size: 1em; background: #457b9d; color: #fff; border: none; border-radius: 6px; margin-top: 22px; cursor: pointer;}
+    button:active { background: #26466d;}
+    .message { margin-top: 18px; padding: 9px; border-radius: 5px; background: #eaf2fb; color: #21669e;}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Customer Feedback</h2>
+    <form id="feedbackForm">
+      <label for="name">Your Name</label>
+      <input id="name" name="name" type="text" required />
+
+      <label for="email">Your Email</label>
+      <input id="email" name="email" type="email" required />
+
+      <label for="feedback">Your Feedback</label>
+      <textarea id="feedback" name="feedback" required></textarea>
+      
+      <input type="hidden" id="customerid" name="customerid" />
+      <input type="hidden" id="ticket" name="ticket" />
+      <input type="hidden" id="ref" name="ref" />
+
+      <button type="submit">Send Feedback</button>
+    </form>
+    <div id="responseMsg" class="message" style="display:none"></div>
+  </div>
+
+  <script>
+    // Parse query string and set hidden fields
+    const urlParams = new URLSearchParams(window.location.search);
+    document.getElementById('customerid').value = urlParams.get('customerid') || '';
+    document.getElementById('ticket').value = urlParams.get('ticket') || '';
+    document.getElementById('ref').value = urlParams.get('ref') || '';
+
+    // Change this to your Power Automate/Flow, Azure, or other endpoint:
+    const endpoint = "https://YOUR-ENDPOINT-URL-HERE";
+
+    document.getElementById('feedbackForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const formData = {
+        name: this.name.value,
+        email: this.email.value,
+        feedback: this.feedback.value,
+        customerid: this.customerid.value,
+        ticket: this.ticket.value,
+        ref: this.ref.value
+      };
+
+      fetch(endpoint, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData)
+      })
+      .then(res => {
+        if (res.ok) {
+          document.getElementById('responseMsg').innerText = "Thank you for your feedback!";
+          document.getElementById('responseMsg').style.display = 'block';
+          this.reset();
+        } else {
+          throw new Error("Network error");
+        }
+      })
+      .catch(err => {
+        document.getElementById('responseMsg').innerText = "Sorry, there was a problem sending your feedback. Please try again.";
+        document.getElementById('responseMsg').style.display = 'block';
+      });
+    });
+  </script>
+</body>
+</html>

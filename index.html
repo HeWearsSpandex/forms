@@ -9,6 +9,8 @@
       --jhb-yellow: #fbc206;
       --jhb-blue: #27446b;
       --jhb-lightblue: #f5f8fa;
+      --jhb-green: #38b000;
+      --jhb-green-dark: #228c22;
     }
     body {
       background: linear-gradient(120deg, #f5f8fa 0%, #e4ecfa 100%);
@@ -27,7 +29,7 @@
     }
     .form-wrap {
       max-width: 1100px;
-      margin: 0 auto 40px auto;
+      margin: 52px auto 40px auto; /* Increased top margin for more space */
       background: #fff;
       border-radius: 0 0 22px 22px;
       box-shadow: 0 6px 32px rgba(80, 100, 120, 0.10);
@@ -35,7 +37,7 @@
       padding-bottom: 32px;
     }
     .form-title-bar {
-      background: var(--jhb-yellow);
+      /* No yellow background, just clean white */
       color: var(--jhb-blue);
       font-size: 2em;
       font-weight: 600;
@@ -43,10 +45,10 @@
       text-align: left;
       padding-left: 52px;
       letter-spacing: 0.01em;
-      border-radius: 0 0 0 0;
       margin: 0;
       font-family: inherit;
       border-bottom: 1.5px solid #eee6c5;
+      background: transparent;
     }
     .form-inner {
       max-width: 420px;
@@ -96,8 +98,9 @@
       cursor: pointer;
       transition: background 0.16s;
     }
-    button:active, button:focus {
-      background: linear-gradient(90deg, #35659d 0%, #527bc9 100%);
+    button:hover, button:focus-visible {
+      background: linear-gradient(90deg, var(--jhb-green) 0%, var(--jhb-green-dark) 100%);
+      color: #fff;
     }
     .message {
       margin-top: 19px;
@@ -122,6 +125,7 @@
     }
     @media (max-width: 540px) {
       .header-banner { margin-top: 12px; }
+      .form-wrap { margin-top: 18vw; }
       .form-title-bar {
         font-size: 1.18em;
         padding-left: 5vw;

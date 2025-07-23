@@ -23,6 +23,14 @@
       flex-direction: column;
       align-items: center;
     }
+    .site-header {
+      width: 100%;
+      max-width: 410px;
+      margin: 32px auto 0 auto;
+      display: block;
+      border-radius: 18px;
+      box-shadow: 0 6px 16px rgba(39, 68, 107, 0.09);
+    }
     .form-container {
       background: #fff;
       margin: 2rem auto;
@@ -150,6 +158,10 @@
       display: none;
     }
     @media (max-width: 500px) {
+      .site-header {
+        max-width: 100vw;
+        border-radius: 0;
+      }
       .form-container {
         max-width: 99vw;
         padding: 1.4rem 0.5rem 1.2rem 0.5rem;
@@ -158,6 +170,9 @@
   </style>
 </head>
 <body>
+  <!-- Shared company header -->
+  <img src="/assets/header.png" alt="JHB UK Ltd Header" class="site-header">
+
   <form class="form-container" id="feedbackForm" autocomplete="off">
     <div class="form-header">How did we do?</div>
     <fieldset style="border: none; padding: 0; margin: 0 0 1rem 0;">

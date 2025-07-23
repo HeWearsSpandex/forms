@@ -25,10 +25,10 @@
     }
     .site-header {
       width: 100%;
-      max-width: 410px;
-      margin: 32px auto 0 auto;
+      max-width: 1000px;
+      margin: 0 0 32px 0;
       display: block;
-      border-radius: 18px;
+      border-radius: 0;
       box-shadow: 0 6px 16px rgba(39, 68, 107, 0.09);
     }
     .form-container {
@@ -37,7 +37,7 @@
       padding: 2.5rem 2rem 2rem 2rem;
       border-radius: 20px;
       box-shadow: 0 8px 32px rgba(39, 68, 107, 0.08);
-      max-width: 390px;
+      max-width: 430px;
       width: 100%;
     }
     .form-header {
@@ -47,6 +47,25 @@
       color: var(--jhb-blue);
       letter-spacing: 0.2px;
       text-align: center;
+    }
+    .field-row {
+      margin-bottom: 1.1rem;
+    }
+    .field-row input {
+      width: 100%;
+      padding: 0.65em 0.9em;
+      border-radius: 10px;
+      border: 1.2px solid #e4ecfa;
+      font-size: 1.07rem;
+      margin-top: 0.2em;
+      transition: border 0.15s;
+      font-family: inherit;
+      background: var(--jhb-bg);
+      box-sizing: border-box;
+    }
+    .field-row input:focus {
+      border-color: var(--jhb-yellow);
+      outline: none;
     }
     .emoji-group {
       display: flex;
@@ -157,11 +176,10 @@
       text-align: center;
       display: none;
     }
+    @media (max-width: 1100px) {
+      .site-header { max-width: 100vw; }
+    }
     @media (max-width: 500px) {
-      .site-header {
-        max-width: 100vw;
-        border-radius: 0;
-      }
       .form-container {
         max-width: 99vw;
         padding: 1.4rem 0.5rem 1.2rem 0.5rem;
@@ -175,6 +193,14 @@
 
   <form class="form-container" id="feedbackForm" autocomplete="off">
     <div class="form-header">How did we do?</div>
+    <div class="field-row">
+      <label for="name" class="feedback-label">Your Name</label>
+      <input type="text" id="name" name="name" maxlength="80" autocomplete="name" required>
+    </div>
+    <div class="field-row">
+      <label for="email" class="feedback-label">Email Address</label>
+      <input type="email" id="email" name="email" maxlength="120" autocomplete="email" required>
+    </div>
     <fieldset style="border: none; padding: 0; margin: 0 0 1rem 0;">
       <legend class="sr-only">Rate your experience</legend>
       <div class="emoji-group" aria-label="Feedback rating options">
@@ -209,6 +235,7 @@
       const submitButton = document.getElementById("submit-btn");
       const feedbackForm = document.getElementById("feedbackForm");
       const successMsg = document.getElementById("successMessage");
+      const requiredFields = ['name', 'email'];
 
       // Accessibility: hide legend text
       document.querySelectorAll('.sr-only').forEach(el => el.style.cssText = "position:absolute;left:-10000px;top:auto;width:1px;height:1px;overflow:hidden;");
@@ -217,16 +244,23 @@
         emojiButtons.forEach(btn => {
           btn.classList.toggle("selected", btn.dataset.emoji === emoji);
         });
-        submitButton.disabled = false;
         resetButton.style.display = "block";
         feedbackForm.dataset.rating = emoji;
+        checkFormValid();
       }
 
       function clearSelectedEmoji() {
         emojiButtons.forEach(btn => btn.classList.remove("selected"));
-        submitButton.disabled = true;
         resetButton.style.display = "none";
         feedbackForm.dataset.rating = "";
+        checkFormValid();
+      }
+
+      // Check if all required fields + emoji are filled
+      function checkFormValid() {
+        const isEmoji = !!feedbackForm.dataset.rating;
+        const allRequired = requiredFields.every(id => document.getElementById(id).value.trim() !== '');
+        submitButton.disabled = !(isEmoji && allRequired);
       }
 
       // Emoji click always works
@@ -237,6 +271,11 @@
       // Reset always works
       resetButton.addEventListener("click", clearSelectedEmoji);
 
+      // Validate on typing in name/email
+      requiredFields.forEach(id => {
+        document.getElementById(id).addEventListener('input', checkFormValid);
+      });
+
       // On page load: check URL param
       const params = new URLSearchParams(window.location.search);
       if (params.has("rating")) {
@@ -244,6 +283,7 @@
       } else {
         clearSelectedEmoji();
       }
+      checkFormValid();
 
       // Submit feedback (simulate, show thank you, block form)
       feedbackForm.addEventListener("submit", function(e) {

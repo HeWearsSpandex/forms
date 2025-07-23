@@ -7,14 +7,12 @@
   <style>
     :root {
       --jhb-yellow: #fbc206;
-      --jhb-yellow-faded: rgba(251,194,6,0.19);
       --jhb-blue: #27446b;
-      --jhb-lightblue: #f5f8fa;
-      --jhb-grey: #bbb;
+      --jhb-bg: #f5f8fa;
       --emoji-size: 2.4rem;
     }
     body {
-      background: linear-gradient(120deg, var(--jhb-lightblue) 0%, #e4ecfa 100%);
+      background: linear-gradient(120deg, var(--jhb-bg) 0%, #e4ecfa 100%);
       font-family: 'Segoe UI', Arial, sans-serif;
       margin: 0;
       min-height: 100vh;
@@ -26,60 +24,35 @@
       border-radius: 18px;
       box-shadow: 0 8px 36px rgba(39, 68, 107, 0.09);
       overflow: hidden;
-      border: 1.3px solid #e4ecfa;
+      border: 1.2px solid #e4ecfa;
     }
-    .header-bar {
-      display: flex;
-      align-items: flex-start;
-      padding: 0;
-      background: transparent;
-    }
-    .header-logo {
-      height: 58px;
-      margin: 18px 14px 10px 22px;
-      flex-shrink: 0;
-    }
-    .company-bar {
-      margin-top: 22px;
-      flex-grow: 1;
-      background: linear-gradient(90deg, var(--jhb-yellow), var(--jhb-yellow-faded));
-      border-radius: 9px;
-      padding: 8px 18px 7px 20px;
-      font-size: 1.02rem;
-      color: #222;
-      font-weight: 500;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      min-height: 32px;
-    }
-    .company-bar span {
-      color: var(--jhb-blue);
-      font-size: 0.92rem;
-      font-weight: 500;
-      margin-top: 1.5px;
+    .header-image {
+      width: 100%;
+      display: block;
+      border-radius: 18px 18px 0 0;
     }
     .form-title-row {
-      padding: 16px 32px 0 32px;
+      padding: 0 32px 0 32px;
       background: #fff;
     }
     .form-title {
-      font-size: 1.22rem;
+      font-size: 1.18rem;
       font-weight: 700;
       color: #111;
-      letter-spacing: 0.2px;
-      margin: 0 0 7px 0;
+      letter-spacing: 0.17px;
+      margin: 22px 0 6px 0;
+      text-align: left;
     }
     .form-underline {
       border: none;
       border-top: 3.5px solid var(--jhb-yellow);
       margin: 0 0 17px 0;
-      width: 52%;
-      min-width: 88px;
+      width: 47%;
+      min-width: 80px;
     }
     .form-container {
       width: 100%;
-      padding: 0 32px 2.3rem 32px;
+      padding: 0 32px 2.2rem 32px;
       background: #fff;
       border-radius: 0 0 18px 18px;
       box-sizing: border-box;
@@ -87,8 +60,8 @@
     .emoji-group {
       display: flex;
       justify-content: center;
-      gap: 1.2rem;
-      margin: 1.2rem 0 0.5rem 0;
+      gap: 1.3rem;
+      margin: 1.25rem 0 0.5rem 0;
     }
     .emoji-btn {
       background: none;
@@ -115,24 +88,24 @@
     .emoji-label {
       display: block;
       text-align: center;
-      font-size: 0.97rem;
+      font-size: 0.96rem;
       color: var(--jhb-blue);
-      margin-top: 0.19em;
+      margin-top: 0.17em;
       font-weight: 600;
     }
     #dynamic-msg {
       text-align: center;
-      font-size: 1.09rem;
+      font-size: 1.08rem;
       font-weight: 500;
-      margin: 1.05rem 0 1.05rem 0;
-      min-height: 1.5em;
+      margin: 1.02rem 0 1.03rem 0;
+      min-height: 1.4em;
       color: var(--jhb-blue);
       transition: color 0.13s;
     }
     #reset-btn {
       display: none;
       margin: 0 auto 1rem auto;
-      background: var(--jhb-grey);
+      background: #bbb;
       color: #fff;
       border: none;
       border-radius: 8px;
@@ -159,7 +132,7 @@
       margin-top: 0.2em;
       transition: border 0.15s;
       font-family: inherit;
-      background: var(--jhb-lightblue);
+      background: var(--jhb-bg);
       box-sizing: border-box;
     }
     .field-row input:focus {
@@ -167,7 +140,7 @@
       outline: none;
     }
     .feedback-section {
-      margin-bottom: 1.35rem;
+      margin-bottom: 1.28rem;
     }
     .feedback-label {
       font-size: 1rem;
@@ -188,7 +161,7 @@
       transition: border 0.15s;
       resize: vertical;
       font-family: inherit;
-      background: var(--jhb-lightblue);
+      background: var(--jhb-bg);
     }
     textarea:focus {
       border-color: var(--jhb-yellow);
@@ -217,7 +190,7 @@
       outline: none;
     }
     .success-message {
-      color: var(--jhb-green);
+      color: #38b000;
       font-size: 1.2rem;
       margin-top: 1.5rem;
       text-align: center;
@@ -225,25 +198,20 @@
     }
     @media (max-width: 600px) {
       .form-shell { max-width: 99vw; border-radius: 8px;}
-      .form-title-row, .form-container { padding-left: 8vw; padding-right: 8vw;}
-      .header-logo { height: 42px; margin-left: 7px; }
-      .company-bar { padding: 7px 10px 7px 12px; font-size: 0.94rem;}
+      .form-title-row, .form-container { padding-left: 6vw; padding-right: 6vw;}
+      .header-image { border-radius: 8px 8px 0 0; }
     }
   </style>
 </head>
 <body>
   <div class="form-shell">
-    <div class="header-bar">
-      <img src="/assets/header.png" alt="JHB UK Ltd Logo" class="header-logo">
-      <div class="company-bar">
-        JHB UK LTD • The Roadhouse • Marley Head • South Brent • Devon • TQ10 9JT
-        <span>www.jhbukltd.co.uk • 01626 830014</span>
-      </div>
-    </div>
+    <img src="/assets/header.png" alt="JHB UK Ltd Header" class="header-image">
+
     <div class="form-title-row">
       <div class="form-title">Feedback Form</div>
       <hr class="form-underline">
     </div>
+
     <form class="form-container" id="feedbackForm" autocomplete="off">
       <fieldset style="border: none; padding: 0; margin: 0 0 0.2rem 0;">
         <legend class="sr-only">Rate your experience</legend>

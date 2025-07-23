@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Customer Feedback Form</title>
+  <title>Feedback Form | JHB UK Ltd</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
     :root {
@@ -25,52 +25,47 @@
     }
     .site-header {
       width: 100%;
-      max-width: 1000px;
-      margin: 0 0 32px 0;
+      max-width: 950px;
+      margin: 0 0 40px 0; /* Increased bottom margin for clear separation */
       display: block;
       border-radius: 0;
       box-shadow: 0 6px 16px rgba(39, 68, 107, 0.09);
     }
     .form-container {
       background: #fff;
-      margin: 2rem auto;
-      padding: 2.5rem 2rem 2rem 2rem;
-      border-radius: 20px;
-      box-shadow: 0 8px 32px rgba(39, 68, 107, 0.08);
-      max-width: 430px;
+      margin: 0 auto 2rem auto;
+      padding: 0 2rem 2.2rem 2rem;
+      border-radius: 28px;
+      box-shadow: 0 8px 38px 0 rgba(39, 68, 107, 0.16), 0 2px 8px rgba(39, 68, 107, 0.08);
+      max-width: 440px;
       width: 100%;
+      position: relative;
+      border: 1.3px solid #e4ecfa;
     }
-    .form-header {
-      font-size: 1.7rem;
+    .yellow-banner {
+      background: var(--jhb-yellow);
+      color: #1a1a1a;
+      font-size: 1.65rem;
       font-weight: bold;
-      margin-bottom: 1.5rem;
-      color: var(--jhb-blue);
-      letter-spacing: 0.2px;
+      letter-spacing: 0.5px;
+      border-radius: 23px 23px 0 0; /* More pronounced rounding at the top */
+      padding: 1.12rem 1.3rem 1.05rem 1.3rem;
+      box-shadow: 0 3px 8px rgba(251,194,6,0.13);
       text-align: center;
+      margin-bottom: 0;
+      border-bottom: 3px solid var(--jhb-yellow);
     }
-    .field-row {
-      margin-bottom: 1.1rem;
-    }
-    .field-row input {
+    .divider {
       width: 100%;
-      padding: 0.65em 0.9em;
-      border-radius: 10px;
-      border: 1.2px solid #e4ecfa;
-      font-size: 1.07rem;
-      margin-top: 0.2em;
-      transition: border 0.15s;
-      font-family: inherit;
-      background: var(--jhb-bg);
-      box-sizing: border-box;
-    }
-    .field-row input:focus {
-      border-color: var(--jhb-yellow);
-      outline: none;
+      border: none;
+      border-top: 3px solid var(--jhb-yellow);
+      margin: 0 0 1.2rem 0;
+      height: 0;
     }
     .emoji-group {
       display: flex;
       justify-content: space-around;
-      margin-bottom: 1.3rem;
+      margin: 1.2rem 0 0.9rem 0;
     }
     .emoji-btn {
       background: none;
@@ -104,7 +99,7 @@
     }
     #reset-btn {
       display: none;
-      margin: 0 auto 1rem auto;
+      margin: 0 auto 1.1rem auto;
       background: var(--jhb-grey);
       color: #fff;
       border: none;
@@ -118,6 +113,25 @@
     #reset-btn:active, #reset-btn:focus {
       background: var(--jhb-yellow);
       color: #222;
+      outline: none;
+    }
+    .field-row {
+      margin-bottom: 1.1rem;
+    }
+    .field-row input {
+      width: 100%;
+      padding: 0.65em 0.9em;
+      border-radius: 10px;
+      border: 1.2px solid #e4ecfa;
+      font-size: 1.07rem;
+      margin-top: 0.2em;
+      transition: border 0.15s;
+      font-family: inherit;
+      background: var(--jhb-bg);
+      box-sizing: border-box;
+    }
+    .field-row input:focus {
+      border-color: var(--jhb-yellow);
       outline: none;
     }
     .feedback-section {
@@ -184,6 +198,11 @@
         max-width: 99vw;
         padding: 1.4rem 0.5rem 1.2rem 0.5rem;
       }
+      .yellow-banner {
+        font-size: 1.1rem;
+        padding: 0.75rem 0.7rem 0.75rem 0.7rem;
+        border-radius: 15px 15px 0 0;
+      }
     }
   </style>
 </head>
@@ -192,15 +211,10 @@
   <img src="/assets/header.png" alt="JHB UK Ltd Header" class="site-header">
 
   <form class="form-container" id="feedbackForm" autocomplete="off">
-    <div class="form-header">How did we do?</div>
-    <div class="field-row">
-      <label for="name" class="feedback-label">Your Name</label>
-      <input type="text" id="name" name="name" maxlength="80" autocomplete="name" required>
-    </div>
-    <div class="field-row">
-      <label for="email" class="feedback-label">Email Address</label>
-      <input type="email" id="email" name="email" maxlength="120" autocomplete="email" required>
-    </div>
+    <div class="yellow-banner">Feedback Form</div>
+    <hr class="divider">
+
+    <!-- Emojis are now directly under the banner -->
     <fieldset style="border: none; padding: 0; margin: 0 0 1rem 0;">
       <legend class="sr-only">Rate your experience</legend>
       <div class="emoji-group" aria-label="Feedback rating options">
@@ -219,6 +233,16 @@
       </div>
     </fieldset>
     <button type="button" id="reset-btn">Reset</button>
+
+    <!-- Name and Email fields after emoji -->
+    <div class="field-row">
+      <label for="name" class="feedback-label">Your Name</label>
+      <input type="text" id="name" name="name" maxlength="80" autocomplete="name" required>
+    </div>
+    <div class="field-row">
+      <label for="email" class="feedback-label">Email Address</label>
+      <input type="email" id="email" name="email" maxlength="120" autocomplete="email" required>
+    </div>
 
     <div class="feedback-section">
       <label for="feedback" class="feedback-label">How could we improve? (optional)</label>

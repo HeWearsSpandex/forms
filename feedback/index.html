@@ -17,22 +17,35 @@
       margin: 0;
       min-height: 100vh;
     }
-    .form-shell {
-      max-width: 520px;
-      margin: 40px auto 32px auto;
+    .header-wrap {
+      width: 100%;
+      max-width: 700px; /* or whatever your header image's natural width is */
+      margin: 40px auto 0 auto;
       background: #fff;
-      border-radius: 18px;
+      border-radius: 18px 18px 0 0;
       box-shadow: 0 8px 36px rgba(39, 68, 107, 0.09);
       overflow: hidden;
       border: 1.2px solid #e4ecfa;
+      border-bottom: none;
     }
     .header-image {
       width: 100%;
       display: block;
       border-radius: 18px 18px 0 0;
     }
+    .form-shell {
+      width: 100%;
+      max-width: 700px;  /* Match header-wrap */
+      margin: 0 auto 32px auto;
+      background: #fff;
+      border-radius: 0 0 18px 18px;
+      box-shadow: 0 8px 36px rgba(39, 68, 107, 0.09);
+      border: 1.2px solid #e4ecfa;
+      border-top: none;
+      overflow: hidden;
+    }
     .form-title-row {
-      padding: 0 32px 0 32px;
+      padding: 0 40px 0 40px;
       background: #fff;
     }
     .form-title {
@@ -52,7 +65,7 @@
     }
     .form-container {
       width: 100%;
-      padding: 0 32px 2.2rem 32px;
+      padding: 0 40px 2.2rem 40px;
       background: #fff;
       border-radius: 0 0 18px 18px;
       box-sizing: border-box;
@@ -196,17 +209,18 @@
       text-align: center;
       display: none;
     }
-    @media (max-width: 600px) {
-      .form-shell { max-width: 99vw; border-radius: 8px;}
+    @media (max-width: 820px) {
+      .header-wrap, .form-shell { max-width: 98vw; }
       .form-title-row, .form-container { padding-left: 6vw; padding-right: 6vw;}
-      .header-image { border-radius: 8px 8px 0 0; }
     }
   </style>
 </head>
 <body>
-  <div class="form-shell">
+  <div class="header-wrap">
     <img src="/assets/header.png" alt="JHB UK Ltd Header" class="header-image">
+  </div>
 
+  <div class="form-shell">
     <div class="form-title-row">
       <div class="form-title">Feedback Form</div>
       <hr class="form-underline">

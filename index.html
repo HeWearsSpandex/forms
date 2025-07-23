@@ -3,428 +3,240 @@
 <head>
   <meta charset="UTF-8">
   <title>Customer Feedback Form</title>
-  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
     :root {
       --jhb-yellow: #fbc206;
-      --jhb-yellow-faded: rgba(251,194,6,0.19);
       --jhb-blue: #27446b;
-      --jhb-lightblue: #f5f8fa;
       --jhb-green: #38b000;
-      --jhb-green-dark: #228c22;
+      --jhb-red: #e74c3c;
       --jhb-grey: #bbb;
+      --jhb-bg: #f5f8fa;
+      --emoji-size: 2.5rem;
     }
     body {
-      background: linear-gradient(120deg, #f5f8fa 0%, #e4ecfa 100%);
+      background: linear-gradient(120deg, var(--jhb-bg) 0%, #e4ecfa 100%);
       font-family: 'Segoe UI', Arial, sans-serif;
       margin: 0;
       min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
-    .header-banner {
+    .form-container {
+      background: #fff;
+      margin: 2rem auto;
+      padding: 2.5rem 2rem 2rem 2rem;
+      border-radius: 20px;
+      box-shadow: 0 8px 32px rgba(39, 68, 107, 0.08);
+      max-width: 390px;
       width: 100%;
-      max-width: 1100px;
-      margin: 32px auto 0 auto;
-      display: block;
-      border-radius: 20px 20px 0 0;
-      box-shadow: 0 2px 24px rgba(200,150,40,0.07);
-      background: #fff;
     }
-    .form-wrap {
-      max-width: 1100px;
-      margin: 0 auto 40px auto;
-      background: #fff;
-      border-radius: 0 0 22px 22px;
-      box-shadow: 0 6px 32px rgba(80, 100, 120, 0.10);
-      border-top: 0;
-      padding-bottom: 32px;
-    }
-    .form-title-bar {
+    .form-header {
+      font-size: 1.7rem;
+      font-weight: bold;
+      margin-bottom: 1.5rem;
       color: var(--jhb-blue);
-      font-size: 2em;
-      font-weight: 600;
-      padding: 22px 0 16px 0;
-      text-align: left;
-      padding-left: 52px;
-      letter-spacing: 0.01em;
-      margin: 0;
-      font-family: inherit;
-      border-bottom: 6px solid var(--jhb-yellow);
-      background: transparent;
-    }
-    .form-inner {
-      max-width: 420px;
-      margin: 0 auto;
-      padding: 24px 0 0 0;
-    }
-    .emoji-header {
+      letter-spacing: 0.2px;
       text-align: center;
-      font-size: 2em;
-      font-weight: 600;
-      letter-spacing: 0.01em;
-      color: var(--jhb-blue);
-      font-family: inherit;
-      margin: 24px 0 20px 0;
-      line-height: 1.13;
     }
-    label {
+    .emoji-group {
+      display: flex;
+      justify-content: space-around;
+      margin-bottom: 1.3rem;
+    }
+    .emoji-btn {
+      background: none;
+      border: 2px solid transparent;
+      border-radius: 12px;
+      font-size: var(--emoji-size);
+      transition: box-shadow 0.1s, border-color 0.2s;
+      padding: 0.4em 0.6em;
+      cursor: pointer;
+      outline: none;
+      position: relative;
+    }
+    .emoji-btn.selected {
+      border: 2px solid var(--jhb-yellow);
+      background: var(--jhb-yellow);
+      box-shadow: 0 2px 8px rgba(251,194,6,0.10);
+      color: #000;
+    }
+    .emoji-btn:focus {
+      border-color: var(--jhb-blue);
+      box-shadow: 0 0 0 2px var(--jhb-blue);
+      outline: none;
+    }
+    .emoji-label {
       display: block;
-      margin: 22px 0 7px 0;
-      color: #375175;
-      font-weight: 500;
-      font-size: 1em;
-      letter-spacing: 0.02em;
+      text-align: center;
+      font-size: 0.98rem;
+      color: var(--jhb-blue);
+      margin-top: 0.2em;
+      font-weight: 600;
     }
-    input, textarea {
-      width: 100%;
-      padding: 12px 10px;
-      border: 2px solid #000;
-      background: var(--jhb-yellow-faded);
-      color: #000;
+    #reset-btn {
+      display: none;
+      margin: 0 auto 1rem auto;
+      background: var(--jhb-grey);
+      color: #fff;
+      border: none;
       border-radius: 8px;
-      font-size: 1em;
-      font-family: inherit;
-      margin-bottom: 2px;
-      box-sizing: border-box;
-      transition: border-color 0.22s, background 0.18s;
+      padding: 0.5em 1.3em;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background 0.15s;
+      box-shadow: 0 2px 8px rgba(187, 187, 187, 0.08);
     }
-    input:focus, textarea:focus {
-      outline: 2.5px solid #000;
-      border-color: #000;
-      background: rgba(251,194,6,0.30);
-      color: #000;
+    #reset-btn:active, #reset-btn:focus {
+      background: var(--jhb-yellow);
+      color: #222;
+      outline: none;
     }
-    ::placeholder {
-      color: #333;
-      opacity: 0.8;
+    .feedback-section {
+      margin-bottom: 1.5rem;
+    }
+    .feedback-label {
+      font-size: 1rem;
+      color: var(--jhb-blue);
+      font-weight: 500;
+      margin-bottom: 0.3em;
+      display: block;
     }
     textarea {
-      min-height: 110px;
-      resize: vertical;
-    }
-    .optional {
-      color: #888;
-      font-style: italic;
-      font-size: 0.98em;
-      margin-left: 3px;
-    }
-    button[type="submit"] {
       width: 100%;
-      padding: 13px;
-      font-size: 1.13em;
-      background: var(--jhb-yellow-faded);
-      color: #000;
-      border: 2px solid #000;
-      border-radius: 8px;
-      margin-top: 26px;
-      font-weight: 600;
-      letter-spacing: 0.05em;
-      box-shadow: 0 2px 10px rgba(70,110,180,0.08);
-      cursor: pointer;
-      transition: background 0.16s, color 0.13s, border-color 0.13s, opacity 0.14s;
+      min-height: 66px;
+      padding: 0.6em 0.7em;
+      border-radius: 10px;
+      border: 1.2px solid #e4ecfa;
+      font-size: 1rem;
+      margin-bottom: 0.2em;
+      transition: border 0.15s;
+      resize: vertical;
+      font-family: inherit;
+      background: var(--jhb-bg);
     }
-    button[type="submit"]:disabled {
-      background: var(--jhb-grey);
-      color: #666;
-      border-color: #ccc;
+    textarea:focus {
+      border-color: var(--jhb-yellow);
+      outline: none;
+    }
+    #submit-btn {
+      display: block;
+      width: 100%;
+      background: var(--jhb-yellow);
+      color: #1a1a1a;
+      border: none;
+      border-radius: 11px;
+      font-size: 1.15rem;
+      font-weight: bold;
+      padding: 0.7em 0;
+      cursor: pointer;
       opacity: 0.65;
-      cursor: not-allowed;
+      transition: background 0.17s, opacity 0.14s;
     }
-    button[type="submit"]:hover:enabled, button[type="submit"]:focus-visible:enabled {
-      background: linear-gradient(90deg, var(--jhb-green) 0%, var(--jhb-green-dark) 100%);
+    #submit-btn:enabled {
+      opacity: 1;
+    }
+    #submit-btn:active, #submit-btn:focus {
+      background: var(--jhb-blue);
       color: #fff;
-      border-color: var(--jhb-green-dark);
-    }
-    .message {
-      margin-top: 19px;
-      padding: 11px 16px;
-      border-radius: 8px;
-      background: #e6f1fa;
-      color: #195e7a;
-      font-size: 1.03em;
-      text-align: center;
-      box-shadow: 0 1px 4px rgba(68,98,120,0.08);
-      animation: fadeInMsg 0.7s cubic-bezier(.44,.64,.4,1.36);
-    }
-    @keyframes fadeInMsg {
-      from { opacity: 0; transform: scale(0.97);}
-      to   { opacity: 1; transform: scale(1);}
-    }
-    /* Emoji rating buttons */
-    .emoji-btn {
-      font-size: 2.5em;
-      margin: 0 18px 10px 18px;
-      background: var(--jhb-yellow-faded);
-      border: 2px solid #000;
-      border-radius: 50%;
-      width: 70px;
-      height: 70px;
-      line-height: 1.15em;
-      cursor: pointer;
-      transition: box-shadow 0.15s, border-color 0.15s, background 0.14s;
-      outline: none;
-      color: #222;
-      box-shadow: 0 2px 6px rgba(80, 90, 80, 0.06);
-      vertical-align: middle;
-      user-select: none;
-    }
-    .emoji-btn:hover, .emoji-btn.active, .emoji-btn:focus-visible {
-      background: #ffe060;
-      border-color: var(--jhb-yellow);
-      box-shadow: 0 2px 14px rgba(200, 150, 40, 0.17);
-    }
-    .reset-btn {
-      display: inline-block;
-      margin-left: 16px;
-      background: var(--jhb-yellow-faded);
-      color: #222;
-      border-radius: 50%;
-      font-size: 1.4em;
-      width: 56px;
-      height: 56px;
-      border: 2px solid #000;
-      font-weight: 600;
-      cursor: pointer;
-      transition: background 0.16s, color 0.13s, border-color 0.13s;
-      box-shadow: 0 2px 6px rgba(80, 90, 80, 0.04);
-      vertical-align: middle;
-      text-align: center;
-      line-height: 1.2em;
       outline: none;
     }
-    .reset-btn:hover, .reset-btn:focus-visible {
-      background: #ffe060;
-      color: #000;
-      border-color: var(--jhb-yellow);
+    .success-message {
+      color: var(--jhb-green);
+      font-size: 1.2rem;
+      margin-top: 1.5rem;
+      text-align: center;
+      display: none;
     }
-    .reset-btn span {
-      font-size: 1.1em;
-      vertical-align: middle;
-      letter-spacing: 0.01em;
-      font-weight: 500;
-    }
-    .rating-message {
-      font-weight: 500;
-      color: #222;
-      margin-bottom: 0.7em;
-    }
-    @media (max-width: 1100px) {
-      .header-banner, .form-wrap {
-        width: 98vw;
+    @media (max-width: 500px) {
+      .form-container {
         max-width: 99vw;
+        padding: 1.4rem 0.5rem 1.2rem 0.5rem;
       }
-    }
-    @media (max-width: 540px) {
-      .header-banner { margin-top: 12px; }
-      .form-wrap { margin-top: 0; }
-      .form-title-bar {
-        font-size: 1.18em;
-        padding-left: 5vw;
-      }
-      .form-inner {
-        padding: 4vw 0 0 0;
-        max-width: 97vw;
-      }
-      .emoji-header { font-size: 1.2em; }
-      .emoji-btn { font-size: 1.4em; width: 45px; height: 45px; margin: 0 7px 10px 7px;}
-      .reset-btn { font-size: 1em; height: 38px; width: 38px;}
     }
   </style>
 </head>
 <body>
-  <!-- Banner/Header image -->
-  <img src="Website Header.png" alt="JHB UK Ltd Header" class="header-banner" />
+  <form class="form-container" id="feedbackForm" autocomplete="off">
+    <div class="form-header">How did we do?</div>
+    <fieldset style="border: none; padding: 0; margin: 0 0 1rem 0;">
+      <legend class="sr-only">Rate your experience</legend>
+      <div class="emoji-group" aria-label="Feedback rating options">
+        <button type="button" class="emoji-btn" data-emoji="up" aria-label="Great">
+          👍
+          <span class="emoji-label">Great</span>
+        </button>
+        <button type="button" class="emoji-btn" data-emoji="ok" aria-label="Okay">
+          🤚
+          <span class="emoji-label">Okay</span>
+        </button>
+        <button type="button" class="emoji-btn" data-emoji="down" aria-label="Not good">
+          👎
+          <span class="emoji-label">Not good</span>
+        </button>
+      </div>
+    </fieldset>
+    <button type="button" id="reset-btn">Reset</button>
 
-  <div class="form-wrap">
-    <div class="form-title-bar">
-      Customer Feedback
+    <div class="feedback-section">
+      <label for="feedback" class="feedback-label">How could we improve? (optional)</label>
+      <textarea id="feedback" name="feedback" maxlength="300" placeholder="Let us know your thoughts…"></textarea>
     </div>
-    <div class="form-inner">
-      <p style="color:#444; margin:0 0 18px 0; font-size:1.03em;">
-        All fields are required unless marked optional.
-      </p>
-      <form id="feedbackForm" novalidate>
-        <div id="ratingSelectorWrap">
-          <div class="emoji-header">How did we do?</div>
-          <div id="ratingSelector" style="text-align:center; margin-bottom:12px;">
-            <button type="button" class="emoji-btn" data-rating="up" title="Happy">👍</button>
-            <button type="button" class="emoji-btn" data-rating="ok" title="Okay">👌</button>
-            <button type="button" class="emoji-btn" data-rating="down" title="Not happy">👎</button>
-          </div>
-        </div>
-        <div id="afterRatingWrap" style="display:none; text-align:center; margin-bottom:10px;">
-          <button type="button" id="resetRating" class="reset-btn" title="Change your rating" aria-label="Reset Rating"><span>↺</span></button>
-        </div>
-        <div id="ratingDisplay" style="text-align:center; font-size:2.6em; margin-bottom:8px; display:none;"></div>
-        <div id="ratingMsg" class="rating-message" style="text-align:center; font-size:1.08em; margin-bottom:18px; display:none;"></div>
 
-        <div id="additionalFields">
-          <label for="name">Your Name</label>
-          <input id="name" name="name" type="text" required placeholder="Enter your name" />
-
-          <label for="email">Your Email <span class="optional">(optional)</span></label>
-          <input id="email" name="email" type="email" placeholder="Enter your email" />
-        </div>
-
-        <div id="feedbackSection" style="display:none;">
-          <label for="feedback" id="feedbackLabel">
-            What did we do well, or what could we do even better? <span class="optional">(optional)</span>
-          </label>
-          <textarea id="feedback" name="feedback" placeholder="Type your feedback"></textarea>
-        </div>
-        
-        <!-- Hidden fields for contextual data -->
-        <input type="hidden" id="customerid" name="customerid" />
-        <input type="hidden" id="ticket" name="ticket" />
-        <input type="hidden" id="ref" name="ref" />
-        <input type="hidden" id="rating" name="rating" />
-
-        <button type="submit" id="submitBtn" disabled>Send Feedback</button>
-      </form>
-      <div id="responseMsg" class="message" style="display:none"></div>
-    </div>
-  </div>
-
+    <button type="submit" id="submit-btn" disabled>Submit feedback</button>
+    <div class="success-message" id="successMessage">Thank you for your feedback!</div>
+  </form>
   <script>
-    // Parse query string and set hidden fields
-    const urlParams = new URLSearchParams(window.location.search);
-    document.getElementById('customerid').value = urlParams.get('customerid') || '';
-    document.getElementById('ticket').value = urlParams.get('ticket') || '';
-    document.getElementById('ref').value = urlParams.get('ref') || '';
+    document.addEventListener("DOMContentLoaded", function() {
+      const emojiButtons = document.querySelectorAll(".emoji-btn");
+      const resetButton = document.getElementById("reset-btn");
+      const submitButton = document.getElementById("submit-btn");
+      const feedbackForm = document.getElementById("feedbackForm");
+      const successMsg = document.getElementById("successMessage");
 
-    // Pre-fill name/email from URL if available
-    const name = urlParams.get('name');
-    const email = urlParams.get('email');
-    if (name) document.getElementById('name').value = name;
-    if (email) document.getElementById('email').value = email;
+      // Accessibility: hide legend text
+      document.querySelectorAll('.sr-only').forEach(el => el.style.cssText = "position:absolute;left:-10000px;top:auto;width:1px;height:1px;overflow:hidden;");
 
-    // Elements
-    const ratingSelectorWrap = document.getElementById('ratingSelectorWrap');
-    const ratingSelector = document.getElementById('ratingSelector');
-    const ratingDisplay = document.getElementById('ratingDisplay');
-    const ratingMsg = document.getElementById('ratingMsg');
-    const feedbackSection = document.getElementById('feedbackSection');
-    const feedbackLabel = document.getElementById('feedbackLabel');
-    const ratingInput = document.getElementById('rating');
-    const feedbackTextarea = document.getElementById('feedback');
-    const emojiBtns = document.querySelectorAll('.emoji-btn');
-    const afterRatingWrap = document.getElementById('afterRatingWrap');
-    const resetBtn = document.getElementById('resetRating');
-    const submitBtn = document.getElementById('submitBtn');
-
-    // Helper to show feedback path for a rating (feedback always shown, but optional)
-    function showForRating(rating) {
-      ratingSelectorWrap.style.display = "none";
-      ratingDisplay.style.display = "";
-      ratingMsg.style.display = "";
-      feedbackSection.style.display = "";
-      afterRatingWrap.style.display = ""; // Show the reset button
-      feedbackTextarea.required = false; // Feedback is now optional
-      ratingInput.value = rating;
-      submitBtn.disabled = false; // Enable submit
-
-      emojiBtns.forEach(btn => btn.classList.remove('active'));
-      let emoji, msg, label;
-      if (rating === 'up') {
-        emoji = '👍';
-        msg = "We are glad we met your standards and ours.";
-        label = "What did we do well, or what could we do even better?";
-      } else if (rating === 'ok') {
-        emoji = '👌';
-        msg = "So, it went ok, but what could we do better next time?";
-        label = "How could we do better?";
-      } else if (rating === 'down') {
-        emoji = '👎';
-        msg = "We are sorry we let you down, please tell us what we could improve next time?";
-        label = "What should we improve next time?";
+      function setSelectedEmoji(emoji) {
+        emojiButtons.forEach(btn => {
+          btn.classList.toggle("selected", btn.dataset.emoji === emoji);
+        });
+        submitButton.disabled = false;
+        resetButton.style.display = "block";
+        feedbackForm.dataset.rating = emoji;
       }
-      ratingDisplay.textContent = emoji;
-      ratingMsg.textContent = msg;
-      ratingMsg.style.color = "#222";
-      feedbackLabel.innerHTML = label + ' <span class="optional">(optional)</span>';
-    }
 
-    // If rating present in URL, pre-set & skip selector
-    const urlRating = urlParams.get('rating');
-    if (urlRating === 'up' || urlRating === 'ok' || urlRating === 'down') {
-      showForRating(urlRating);
-    } else {
-      // Show emoji selector, hide message/display/feedback until chosen
-      ratingSelectorWrap.style.display = "";
-      ratingDisplay.style.display = "none";
-      ratingMsg.style.display = "none";
-      feedbackSection.style.display = "none";
-      afterRatingWrap.style.display = "none";
-      feedbackTextarea.required = false;
-      submitBtn.disabled = true; // Disabled until rating picked
-      // Click handler for emoji buttons
-      emojiBtns.forEach(btn => {
-        btn.onclick = function() {
-          emojiBtns.forEach(b => b.classList.remove('active'));
-          this.classList.add('active');
-          showForRating(this.getAttribute('data-rating'));
-        }
+      function clearSelectedEmoji() {
+        emojiButtons.forEach(btn => btn.classList.remove("selected"));
+        submitButton.disabled = true;
+        resetButton.style.display = "none";
+        feedbackForm.dataset.rating = "";
+      }
+
+      // Emoji click always works
+      emojiButtons.forEach(btn => {
+        btn.addEventListener("click", () => setSelectedEmoji(btn.dataset.emoji));
       });
-    }
 
-    // Reset button functionality
-    resetBtn.onclick = function() {
-      // Show the emoji selector again, hide the chosen rating/message/feedback/reset
-      ratingSelectorWrap.style.display = "";
-      ratingDisplay.style.display = "none";
-      ratingMsg.style.display = "none";
-      feedbackSection.style.display = "none";
-      afterRatingWrap.style.display = "none";
-      ratingInput.value = "";
-      feedbackTextarea.value = "";
-      feedbackTextarea.required = false;
-      submitBtn.disabled = true; // Disable again
-      emojiBtns.forEach(btn => btn.classList.remove('active'));
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    };
+      // Reset always works
+      resetButton.addEventListener("click", clearSelectedEmoji);
 
-    // Change this to your endpoint (Power Automate, Azure, etc.)
-    const endpoint = "https://YOUR-ENDPOINT-URL-HERE";
-
-    document.getElementById('feedbackForm').addEventListener('submit', function(e) {
-      // Block submit if no rating chosen
-      if (!ratingInput.value) {
-        ratingMsg.textContent = "Please select how you felt about our service.";
-        ratingMsg.style.color = "#c00";
-        ratingMsg.style.display = "";
-        ratingSelectorWrap.scrollIntoView({behavior:"smooth", block:"center"});
-        e.preventDefault();
-        return false;
+      // On page load: check URL param
+      const params = new URLSearchParams(window.location.search);
+      if (params.has("rating")) {
+        setSelectedEmoji(params.get("rating"));
+      } else {
+        clearSelectedEmoji();
       }
-      // No need to block submit if feedback is empty (it's optional)
-      e.preventDefault();
-      const formData = {
-        name: this.name.value,
-        email: this.email.value,
-        feedback: this.feedback.value,
-        customerid: this.customerid.value,
-        ticket: this.ticket.value,
-        ref: this.ref.value,
-        rating: this.rating.value
-      };
 
-      fetch(endpoint, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData)
-      })
-      .then(res => {
-        if (res.ok) {
-          document.getElementById('responseMsg').innerText = "Thank you for your feedback!";
-          document.getElementById('responseMsg').style.display = 'block';
-          this.reset();
-          submitBtn.disabled = true;
-        } else {
-          throw new Error("Network error");
-        }
-      })
-      .catch(err => {
-        document.getElementById('responseMsg').innerText = "Sorry, there was a problem sending your feedback. Please try again.";
-        document.getElementById('responseMsg').style.display = 'block';
+      // Submit feedback (simulate, show thank you, block form)
+      feedbackForm.addEventListener("submit", function(e) {
+        e.preventDefault();
+        submitButton.disabled = true;
+        feedbackForm.querySelectorAll("input,textarea,button").forEach(el => el.disabled = true);
+        successMsg.style.display = "block";
+        // TODO: Replace with your AJAX or backend call as needed
       });
     });
   </script>

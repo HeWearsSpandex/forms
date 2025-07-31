@@ -7,9 +7,10 @@
   <style>
     :root {
       --jhb-yellow: #fbc206;
+      --jhb-yellow-bg: #fff9e3;
       --jhb-blue: #27446b;
       --jhb-bg: #f5f8fa;
-      --jhb-error: #d11;
+      --jhb-error: #b88600;
       --emoji-size: 2.4rem;
     }
     body {
@@ -161,18 +162,20 @@
       border: 1.2px solid #e4ecfa;
       font-size: 1.08rem;
       margin-top: 0.2em;
-      transition: border 0.15s;
+      transition: border 0.15s, background 0.15s;
       font-family: inherit;
       background: var(--jhb-bg);
       box-sizing: border-box;
     }
     .field-row input:focus, .field-row input.field-error {
-      border-color: var(--jhb-error);
-      box-shadow: 0 0 0 1.5px var(--jhb-error);
+      border-color: var(--jhb-yellow);
+      box-shadow: 0 0 0 1.5px var(--jhb-yellow);
+      background: var(--jhb-yellow-bg);
       outline: none;
     }
     .field-row input.field-error {
-      border-color: var(--jhb-error);
+      border-color: var(--jhb-yellow);
+      background: var(--jhb-yellow-bg);
     }
     .feedback-section {
       margin-bottom: 1.28rem;
@@ -243,9 +246,10 @@
       display: none;
       text-align: center;
       margin-top: 0.7em;
-      background: #ffecec;
+      background: #fffbe5;
       border-radius: 6px;
       padding: 0.4em 1em;
+      border: 1px solid var(--jhb-yellow);
     }
     @media (max-width: 900px) {
       .a4-container {

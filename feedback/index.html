@@ -9,6 +9,7 @@
       --jhb-yellow: #fbc206;
       --jhb-blue: #27446b;
       --jhb-bg: #f5f8fa;
+      --jhb-error: #d11;
       --emoji-size: 2.4rem;
     }
     body {
@@ -165,9 +166,13 @@
       background: var(--jhb-bg);
       box-sizing: border-box;
     }
-    .field-row input:focus {
-      border-color: var(--jhb-yellow);
+    .field-row input:focus, .field-row input.field-error {
+      border-color: var(--jhb-error);
+      box-shadow: 0 0 0 1.5px var(--jhb-error);
       outline: none;
+    }
+    .field-row input.field-error {
+      border-color: var(--jhb-error);
     }
     .feedback-section {
       margin-bottom: 1.28rem;
@@ -232,6 +237,16 @@
       text-align: center;
       display: none;
     }
+    #form-error-msg {
+      color: var(--jhb-error);
+      font-weight: 500;
+      display: none;
+      text-align: center;
+      margin-top: 0.7em;
+      background: #ffecec;
+      border-radius: 6px;
+      padding: 0.4em 1em;
+    }
     @media (max-width: 900px) {
       .a4-container {
         max-width: 98vw;
@@ -256,7 +271,7 @@
         <div class="form-title">Feedback Form</div>
         <hr class="form-underline">
       </div>
-      <form class="form-container" id="feedbackForm" autocomplete="off">
+      <form class="form-container" id="feedbackForm" autocomplete="off" novalidate>
         <fieldset style="border: none; padding: 0; margin: 0 0 0.2rem 0;">
           <legend class="sr-only">Rate your experience</legend>
           <div class="emoji-group" aria-label="Feedback rating options">
@@ -278,17 +293,18 @@
         <div id="dynamic-msg"></div>
         <div class="field-row">
           <label for="name" class="feedback-label">Your Name</label>
-          <input type="text" id="name" name="name" maxlength="80" autocomplete="name" required>
+          <input type="text" id="name" name="name" maxlength="80" autocomplete="name" required aria-required="true">
         </div>
         <div class="field-row">
           <label for="email" class="feedback-label">Email Address</label>
-          <input type="email" id="email" name="email" maxlength="120" autocomplete="email" required>
+          <input type="email" id="email" name="email" maxlength="120" autocomplete="email" required aria-required="true">
         </div>
         <div class="feedback-section">
           <label for="feedback" id="feedback-label" class="feedback-label">How could we improve? (optional)</label>
           <textarea id="feedback" name="feedback" maxlength="300" placeholder="Let us know your thoughts…"></textarea>
         </div>
-        <button type="submit" id="submit-btn" disabled>Submit feedback</button>
+        <button type="submit" id="submit-btn" disabled aria-disabled="true">Submit feedback</button>
+        <div id="form-error-msg"></div>
         <div class="success-message" id="successMessage">Thank you for your feedback!</div>
       </form>
     </div>
@@ -303,10 +319,8 @@
       const requiredFields = ['name', 'email'];
       const dynamicMsg = document.getElementById("dynamic-msg");
       const feedbackLabel = document.getElementById("feedback-label");
-  
-      // Disable submit initially
-      submitButton.disabled = true;
-  
+      const errorMsg = document.getElementById("form-error-msg");
+
       // Dynamic text based on emoji
       const emojiText = {
         "up": {
@@ -326,15 +340,19 @@
           label: "How could we improve? (optional)"
         }
       };
-  
+
+      // Disable submit initially
+      submitButton.disabled = true;
+      submitButton.setAttribute('aria-disabled', 'true');
+
       function updateDynamicText(emoji) {
         dynamicMsg.textContent = emojiText[emoji]?.msg || "";
         feedbackLabel.textContent = emojiText[emoji]?.label || "How could we improve? (optional)";
       }
-  
+
       // Accessibility: hide legend text
       document.querySelectorAll('.sr-only').forEach(el => el.style.cssText = "position:absolute;left:-10000px;top:auto;width:1px;height:1px;overflow:hidden;");
-  
+
       function setSelectedEmoji(emoji) {
         emojiButtons.forEach(btn => {
           btn.classList.toggle("selected", btn.dataset.emoji === emoji);
@@ -344,7 +362,7 @@
         updateDynamicText(emoji);
         checkFormValid();
       }
-  
+
       function clearSelectedEmoji() {
         emojiButtons.forEach(btn => btn.classList.remove("selected"));
         resetButton.style.display = "none";
@@ -352,27 +370,55 @@
         updateDynamicText("");
         checkFormValid();
       }
-  
+
+      // Highlight fields that are missing
+      function highlightErrors() {
+        requiredFields.forEach(id => {
+          const input = document.getElementById(id);
+          if (input.value.trim() === "") {
+            input.classList.add("field-error");
+          } else {
+            input.classList.remove("field-error");
+          }
+        });
+      }
+
       // Ensure the submit button is only enabled when ALL required are filled + rating
       function checkFormValid() {
         const isEmoji = !!feedbackForm.dataset.rating;
         const allRequired = requiredFields.every(id => document.getElementById(id).value.trim() !== '');
         submitButton.disabled = !(isEmoji && allRequired);
+        submitButton.setAttribute('aria-disabled', submitButton.disabled ? 'true' : 'false');
+        // Show/hide error message
+        if (!isEmoji || !allRequired) {
+          errorMsg.style.display = "block";
+          if (!allRequired && !isEmoji) {
+            errorMsg.textContent = "Please select a rating and complete all required fields.";
+          } else if (!isEmoji) {
+            errorMsg.textContent = "Please select a rating.";
+          } else {
+            errorMsg.textContent = "Please complete all required fields.";
+          }
+        } else {
+          errorMsg.style.display = "none";
+        }
+        highlightErrors();
       }
-  
+
       // Emoji click always works
       emojiButtons.forEach(btn => {
         btn.addEventListener("click", () => setSelectedEmoji(btn.dataset.emoji));
       });
-  
+
       // Reset always works
       resetButton.addEventListener("click", clearSelectedEmoji);
-  
+
       // Validate on typing in name/email
       requiredFields.forEach(id => {
         document.getElementById(id).addEventListener('input', checkFormValid);
+        document.getElementById(id).addEventListener('blur', highlightErrors);
       });
-  
+
       // On page load: check URL param
       const params = new URLSearchParams(window.location.search);
       if (params.has("rating")) {
@@ -381,13 +427,22 @@
         clearSelectedEmoji();
       }
       checkFormValid();
-  
-      // Submit feedback (AJAX to Power Automate HTTP endpoint)
+
+      // Prevent accidental submit if incomplete (just in case)
       feedbackForm.addEventListener("submit", function(e) {
+        const isEmoji = !!feedbackForm.dataset.rating;
+        const allRequired = requiredFields.every(id => document.getElementById(id).value.trim() !== '');
+        if (!(isEmoji && allRequired)) {
+          checkFormValid();
+          e.preventDefault();
+          return false;
+        }
+
         e.preventDefault();
         submitButton.disabled = true;
+        submitButton.setAttribute('aria-disabled', 'true');
         feedbackForm.querySelectorAll("input,textarea,button").forEach(el => el.disabled = true);
-  
+
         const data = {
           name: document.getElementById("name").value.trim(),
           email: document.getElementById("email").value.trim(),
@@ -397,7 +452,7 @@
           threadid: params.get("threadid") || "",
           secret: "jhb-secret-2025"
         };
-  
+
         fetch("https://prod-50.uksouth.logic.azure.com:443/workflows/b1d4b86b6d4846b68975ca1dbe26e372/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=_l675TqvV_rUDfJrDoOgYO-bSbZ-cq7Lw99GBuCLSPo", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -414,6 +469,7 @@
         .catch(error => {
           alert("There was an error submitting your feedback. Please try again.");
           submitButton.disabled = false;
+          submitButton.setAttribute('aria-disabled', 'false');
           feedbackForm.querySelectorAll("input,textarea,button").forEach(el => el.disabled = false);
           checkFormValid(); // Re-check validity after error to restore proper button state
         });

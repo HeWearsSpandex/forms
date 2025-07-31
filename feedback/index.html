@@ -303,7 +303,10 @@
       const requiredFields = ['name', 'email'];
       const dynamicMsg = document.getElementById("dynamic-msg");
       const feedbackLabel = document.getElementById("feedback-label");
-
+  
+      // Disable submit initially
+      submitButton.disabled = true;
+  
       // Dynamic text based on emoji
       const emojiText = {
         "up": {
@@ -323,15 +326,15 @@
           label: "How could we improve? (optional)"
         }
       };
-
+  
       function updateDynamicText(emoji) {
         dynamicMsg.textContent = emojiText[emoji]?.msg || "";
         feedbackLabel.textContent = emojiText[emoji]?.label || "How could we improve? (optional)";
       }
-
+  
       // Accessibility: hide legend text
       document.querySelectorAll('.sr-only').forEach(el => el.style.cssText = "position:absolute;left:-10000px;top:auto;width:1px;height:1px;overflow:hidden;");
-
+  
       function setSelectedEmoji(emoji) {
         emojiButtons.forEach(btn => {
           btn.classList.toggle("selected", btn.dataset.emoji === emoji);
@@ -341,7 +344,7 @@
         updateDynamicText(emoji);
         checkFormValid();
       }
-
+  
       function clearSelectedEmoji() {
         emojiButtons.forEach(btn => btn.classList.remove("selected"));
         resetButton.style.display = "none";
@@ -349,27 +352,27 @@
         updateDynamicText("");
         checkFormValid();
       }
-
-      // Check if all required fields + emoji are filled
+  
+      // Ensure the submit button is only enabled when ALL required are filled + rating
       function checkFormValid() {
         const isEmoji = !!feedbackForm.dataset.rating;
         const allRequired = requiredFields.every(id => document.getElementById(id).value.trim() !== '');
         submitButton.disabled = !(isEmoji && allRequired);
       }
-
+  
       // Emoji click always works
       emojiButtons.forEach(btn => {
         btn.addEventListener("click", () => setSelectedEmoji(btn.dataset.emoji));
       });
-
+  
       // Reset always works
       resetButton.addEventListener("click", clearSelectedEmoji);
-
+  
       // Validate on typing in name/email
       requiredFields.forEach(id => {
         document.getElementById(id).addEventListener('input', checkFormValid);
       });
-
+  
       // On page load: check URL param
       const params = new URLSearchParams(window.location.search);
       if (params.has("rating")) {
@@ -378,13 +381,13 @@
         clearSelectedEmoji();
       }
       checkFormValid();
-
+  
       // Submit feedback (AJAX to Power Automate HTTP endpoint)
       feedbackForm.addEventListener("submit", function(e) {
         e.preventDefault();
         submitButton.disabled = true;
         feedbackForm.querySelectorAll("input,textarea,button").forEach(el => el.disabled = true);
-
+  
         const data = {
           name: document.getElementById("name").value.trim(),
           email: document.getElementById("email").value.trim(),
@@ -394,7 +397,7 @@
           threadid: params.get("threadid") || "",
           secret: "jhb-secret-2025"
         };
-
+  
         fetch("https://prod-50.uksouth.logic.azure.com:443/workflows/b1d4b86b6d4846b68975ca1dbe26e372/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=_l675TqvV_rUDfJrDoOgYO-bSbZ-cq7Lw99GBuCLSPo", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -412,6 +415,7 @@
           alert("There was an error submitting your feedback. Please try again.");
           submitButton.disabled = false;
           feedbackForm.querySelectorAll("input,textarea,button").forEach(el => el.disabled = false);
+          checkFormValid(); // Re-check validity after error to restore proper button state
         });
       });
     });

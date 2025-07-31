@@ -379,13 +379,40 @@
       }
       checkFormValid();
 
-      // Submit feedback (simulate, show thank you, block form)
+      // Submit feedback (AJAX to Power Automate HTTP endpoint)
       feedbackForm.addEventListener("submit", function(e) {
         e.preventDefault();
         submitButton.disabled = true;
         feedbackForm.querySelectorAll("input,textarea,button").forEach(el => el.disabled = true);
-        successMsg.style.display = "block";
-        // TODO: Replace with your AJAX or backend call as needed
+
+        const data = {
+          name: document.getElementById("name").value.trim(),
+          email: document.getElementById("email").value.trim(),
+          rating: feedbackForm.dataset.rating,
+          feedback: document.getElementById("feedback").value.trim(),
+          messageid: params.get("messageid") || "",
+          threadid: params.get("threadid") || "",
+          secret: "jhb-secret-2025"
+        };
+
+        fetch("https://prod-50.uksouth.logic.azure.com:443/workflows/b1d4b86b6d4846b68975ca1dbe26e372/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=_l675TqvV_rUDfJrDoOgYO-bSbZ-cq7Lw99GBuCLSPo", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(data)
+        })
+        .then(response => {
+          if (!response.ok) throw new Error("Submission failed.");
+          return response.json();
+        })
+        .then(json => {
+          successMsg.style.display = "block";
+          feedbackForm.querySelectorAll("input,textarea,button").forEach(el => el.disabled = true);
+        })
+        .catch(error => {
+          alert("There was an error submitting your feedback. Please try again.");
+          submitButton.disabled = false;
+          feedbackForm.querySelectorAll("input,textarea,button").forEach(el => el.disabled = false);
+        });
       });
     });
   </script>
